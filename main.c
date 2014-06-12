@@ -12,6 +12,7 @@ volatile char LEDupdateFLAG;
 
 struct TVector ball_p;
 struct TVector ball_v;
+int frameBounds[4] = {2,2,140,70};
 
 char getB(){
 	return	// 0 0 0 0 0 F7 F6 D3
@@ -20,7 +21,6 @@ char getB(){
 }
 
 void init(){
-	
 	init_uart(_UART0,_DEFFREQ,_DEFBAUD);	// set-up UART0 to 57600, 8n1
 
 	// Set button ports as input
@@ -32,11 +32,21 @@ void init(){
 }
 
 void init_ball(){
-	setVec(&ball_p, 0, 0);
+	setVec(&ball_p, 20, 20);
 	setVec(&ball_v, 1, 1);
 }
 
 void update_ball(){
+	int xPos = ball_p.x >> 14;
+	int yPos = ball_p.y >> 14;
+
+	if(xPos <= frameBounds[0]+1 || xPos >= frameBounds[2]-1){
+		ball_v.x = -ball_v.x;
+	}
+	if(yPos <= frameBounds[1]+1 || yPos >= frameBounds[3]-1){
+		ball_v.y = -ball_v.y;
+	}
+
 	ball_p.x += ball_v.x;
 	ball_p.y += ball_v.y;
 }
@@ -50,8 +60,8 @@ void printBallInfo(){
 }
 
 /*
-void brick_event(){
-	if(wall_pos == ball_pos){
+void hit_event(){
+	if( == ){
 	setVec(&ball_v, ball_v.x, -ball_v.y);
 	}
 }
@@ -61,18 +71,17 @@ void main(){
 	init();
 	clrscr();
 	// window(20,5,80,10,"Hejsa",0);
-	//frame(1,1,160,80,1);
+	frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
 	init_ball();
 
 	while(1){
-	if(milis%100 == 0){
+	if(milis%80 == 0){
 		//printf("%ld\n",milis);
 		//printBallInfo();
 		//printf("\n");
-		gotoxy(ball_p.x >>FIX14_SHIFT,ball_p.y>>FIX14_SHIFT);
+		gotoxy(ball_p.x >>FIX14_SHIFT, ball_p.y>>FIX14_SHIFT);
 		printf(" ");
 		update_ball();
-		
 		gotoxy(ball_p.x >> FIX14_SHIFT,ball_p.y >> FIX14_SHIFT);
 		printf("O");
 	}
