@@ -84,10 +84,11 @@ void main(){
 	drawStriker(20,7);
 
 	while(1){
-		if(milis%80 == 0){
+		if(milis%100 == 0){
 			//printf("%ld\n",milis);
 			//printBallInfo();
 			//printf("\n");
+			drawBall();
 			
 		}
 	

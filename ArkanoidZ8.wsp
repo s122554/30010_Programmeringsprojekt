@@ -396,7 +396,7 @@ MRUFloatCX=0
 MRUFloatCY=0
 MRUFloatStyle=8196
 MRUFloatXPos=-2147483648
-MRUFloatYPos=5136320
+MRUFloatYPos=4243408
 MRUHorzDockCX=1600
 MRUHorzDockCY=29
 MRUVertDockCX=0
@@ -430,7 +430,7 @@ MRUFloatCX=0
 MRUFloatCY=0
 MRUFloatStyle=8196
 MRUFloatXPos=-2147483648
-MRUFloatYPos=5825120
+MRUFloatYPos=5831456
 MRUHorzDockCX=296
 MRUHorzDockCY=30
 MRUVertDockCX=0
@@ -465,7 +465,7 @@ MRUFloatCX=0
 MRUFloatCY=0
 MRUFloatStyle=8196
 MRUFloatXPos=-2147483648
-MRUFloatYPos=6822976
+MRUFloatYPos=7077290
 MRUHorzDockCX=488
 MRUHorzDockCY=30
 MRUVertDockCX=0
@@ -492,8 +492,6 @@ ptn_Child2=ChildFrames
 ptn_Child1=Document-0
 ptn_Child2=Document-1
 ptn_Child3=Document-2
-ptn_Child4=Document-3
-ptn_Child5=Document-4
 
 [WorkState_v1_1.Frames.ChildFrames.Document-0]
 ptn_Child1=ViewFrame-0
@@ -525,28 +523,8 @@ DocumentString=IDE Document
 IsActiveChildFrame=False
 WindowPlacement=MCAAAAAAAAAAAAAACAAAAAAAAKAAAAAAGIDAAAAAPPPPPPPPPPPPPPPPHEAAAAAAADAAAAAAGLEAAAAAAKCAAAAA
 
-[WorkState_v1_1.Frames.ChildFrames.Document-3]
-ptn_Child1=ViewFrame-0
-
-[WorkState_v1_1.Frames.ChildFrames.Document-3.ViewFrame-0]
-DocPathName=.\time.c
-DocTemplateIndex=0
-DocumentString=IDE Document
-IsActiveChildFrame=False
-WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPMPCAAAAAFAAAAAAAHGFAAAAAOBBAAAAA
-
-[WorkState_v1_1.Frames.ChildFrames.Document-4]
-ptn_Child1=ViewFrame-0
-
-[WorkState_v1_1.Frames.ChildFrames.Document-4.ViewFrame-0]
-DocPathName=.\time.h
-DocTemplateIndex=0
-DocumentString=IDE Document
-IsActiveChildFrame=False
-WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAAAAAAAAAIGDAAAAAPPPPPPPPPPPPPPPPIPCAAAAAKCBAAAAADGFAAAAAJKCAAAAA
-
 [WorkState_v1_1.Frames.MainFrame]
-Title=ArkanoidZ8 -- ZDS II - Z8 Encore! Family -- main.c*
+Title=ArkanoidZ8 -- ZDS II - Z8 Encore! Family -- main.c
 WindowPlacement=MCAAAAAACAAAAAAADAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPEKGAAAAABHAAAAAAEFLAAAAADMDAAAAA
 
 [WorkState_v1_1.ToolBarMgr]
