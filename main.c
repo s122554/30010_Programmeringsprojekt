@@ -59,33 +59,38 @@ void printBallInfo(){
 	printf(")");
 }
 
-/*
-void hit_event(){
-	if( == ){
-	setVec(&ball_v, ball_v.x, -ball_v.y);
-	}
+void drawStriker(char x, char length){
+		char i;
+		gotoxy(x,frameBounds[1]+1);
+		for (i=0; i<length;i++){
+			printf("%c",223);
+		}
 }
-*/
+
+void drawBall(){
+	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
+	printf(" ");
+	update_ball();
+	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
+	printf("O");
+}
 
 void main(){
 	init();
 	clrscr();
-	// window(20,5,80,10,"Hejsa",0);
+
 	frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
 	init_ball();
+	drawStriker(20,7);
 
 	while(1){
-	if(milis%80 == 0){
-		//printf("%ld\n",milis);
-		//printBallInfo();
-		//printf("\n");
-		gotoxy(ball_p.x >>FIX14_SHIFT, ball_p.y>>FIX14_SHIFT);
-		printf(" ");
-		update_ball();
-		gotoxy(ball_p.x >> FIX14_SHIFT,ball_p.y >> FIX14_SHIFT);
-		printf("O");
-	}
-
+		if(milis%80 == 0){
+			//printf("%ld\n",milis);
+			//printBallInfo();
+			//printf("\n");
+			
+		}
+	
 
 	}
 	
