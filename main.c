@@ -10,6 +10,9 @@
 volatile unsigned long milis;
 volatile char LEDupdateFLAG;
 
+struct TVector ball_p;
+struct TVector ball_v;
+
 char getB(){
 	return	// 0 0 0 0 0 F7 F6 D3
 		(~PFIN >> 5 & 0x06) +
@@ -28,15 +31,58 @@ void init(){
 	init_led();
 }
 
+void init_ball(){
+	setVec(&ball_p, 0, 0);
+	setVec(&ball_v, 1, 1);
+}
+
+void update_ball(){
+	ball_p.x += ball_v.x;
+	ball_p.y += ball_v.y;
+}
+
+void printBallInfo(){
+	printf("BallPos: (");
+	printFix(expand(ball_p.x));
+	printf(", ");
+	printFix(expand(ball_p.y));
+	printf(")");
+}
+
+/*
+void brick_event(){
+	if(wall_pos == ball_pos){
+	setVec(&ball_v, ball_v.x, -ball_v.y);
+	}
+}
+*/
 
 void main(){
-	struct TVector v;
 	init();
 	clrscr();
 	// window(20,5,80,10,"Hejsa",0);
-	frame(1,1,160,80,1);
+	//frame(1,1,160,80,1);
+	init_ball();
+
+	while(1){
+	if(milis%100 == 0){
+		//printf("%ld\n",milis);
+		//printBallInfo();
+		//printf("\n");
+		gotoxy(ball_p.x >>FIX14_SHIFT,ball_p.y>>FIX14_SHIFT);
+		printf(" ");
+		update_ball();
+		
+		gotoxy(ball_p.x >> FIX14_SHIFT,ball_p.y >> FIX14_SHIFT);
+		printf("O");
+	}
+
+
+	}
 	
-	
+
+
+
 	do {} while (1 != 2); // stay here always
 }
 

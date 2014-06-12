@@ -2,14 +2,12 @@
 #include "sinLUT.h"
 #include "MathFix.h"
 
-#define FIX14_SHIFT 14
-#define FIX14_MULT(a,b) ( (a)*(b) >> FIX14_SHIFT )
-#define FIX14_DIV(a,b)  ( (a) << FIX14_SHIFT / (b))
-
 void setVec(struct TVector *v, long xin, long yin){
 	v->x = xin << FIX14_SHIFT;
 	v->y = yin << FIX14_SHIFT;
-}long sin(long x){
+}
+
+long sin(long x){
 	return SIN[x & 0x1FF];
 }
 
