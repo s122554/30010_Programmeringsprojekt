@@ -12,6 +12,10 @@
 <file filter-key="">.\charset.h</file>
 <file filter-key="">.\MathFix.h</file>
 <file filter-key="">.\sinLUT.h</file>
+<file filter-key="">.\led.c</file>
+<file filter-key="">.\led.h</file>
+<file filter-key="">.\helper.c</file>
+<file filter-key="">.\helper.h</file>
 </files>
 
 <!-- configuration information -->

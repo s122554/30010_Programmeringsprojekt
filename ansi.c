@@ -1,4 +1,5 @@
 #include <sio.h>
+#include "helper.h"
 #define ESC 0x1B
 
 // Clear Screen
@@ -38,13 +39,6 @@ void reverse(char on){
 		printf("%c[7m",ESC);
 	else
 		printf("%c[27m",ESC);
-}
-
-int strlen(char *str){
-	int i = 0;
-	while(*str++ != '\0')
-		i++;
-	return i;
 }
 
 void window(int x1, int y1, int x2, int y2, char *str, int style){
