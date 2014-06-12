@@ -11,6 +11,7 @@ void timer0int() {
 	milis++;
 	LEDupdateFLAG = 1;
 }
+
 void init_time(){
 //  --- Timer ---
 	DI(); // Disable Interrupts

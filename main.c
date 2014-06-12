@@ -12,6 +12,8 @@ volatile char LEDupdateFLAG;
 
 struct TVector ball_p;
 struct TVector ball_v;
+long strikerPos, strikerLen;
+
 int frameBounds[4] = {2,2,140,70};
 
 char getB(){
@@ -59,12 +61,30 @@ void printBallInfo(){
 	printf(")");
 }
 
-void drawStriker(char x, char length){
-		char i;
-		gotoxy(x,frameBounds[1]+1);
-		for (i=0; i<length;i++){
+void moveStriker(char movex){
+	char i, y = frameBounds[1]+1;
+		if(movex < 0 && strikerPos > frameBounds[0]+1){
+			gotoxy(strikerPos, y);
+			printf("%c",223);
+			gotoxy(strikerPos+strikerLen, y);
+			printf(" ");
+			strikerPos--;
+		}
+		else if(movex > 0 && strikerPos+strikerLen < frameBounds[2]-1) {		
+			gotoxy(strikerPos, y);
+			printf(" ");
+			strikerPos++;
+			gotoxy(strikerPos+strikerLen-1, y);
 			printf("%c",223);
 		}
+
+}
+
+void drawStriker(){
+	char i;
+	for (i=0; i<strikerLen;i++){
+		printf("%c",223);
+	}
 }
 
 void drawBall(){
@@ -76,21 +96,40 @@ void drawBall(){
 }
 
 void main(){
+	char tick_ball,tick_ball_last, tick_striker,tick_striker_last;
+	int b_last, b;
 	init();
 	clrscr();
 
 	frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
 	init_ball();
-	drawStriker(20,7);
+
+	strikerPos = 20;
+	strikerLen = 7;
+	// drawStriker();
 
 	while(1){
-		if(milis%100 == 0){
-			//printf("%ld\n",milis);
-			//printBallInfo();
-			//printf("\n");
+		
+
+		tick_ball = (milis & 0x40);
+		tick_striker  = (milis & 0x20);
+
+		if(tick_ball != tick_ball_last){
 			drawBall();
-			
+			tick_ball_last = tick_ball;
 		}
+
+		if(tick_striker != tick_striker_last){
+			b = getB();
+			if(b == 0x02){
+				moveStriker(-1);
+			}
+			else if(b == 0x04){
+				moveStriker(1);
+			}
+			tick_striker_last = tick_striker;
+		}
+
 	
 
 	}
