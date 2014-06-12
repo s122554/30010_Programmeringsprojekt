@@ -16,6 +16,8 @@
 <file filter-key="">.\led.h</file>
 <file filter-key="">.\helper.c</file>
 <file filter-key="">.\helper.h</file>
+<file filter-key="">.\time.c</file>
+<file filter-key="">.\time.h</file>
 </files>
 
 <!-- configuration information -->
