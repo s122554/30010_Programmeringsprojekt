@@ -2,6 +2,12 @@
 #include "helper.h"
 #define ESC 0x1B
 
+const char frameChars[2][8] = {
+	{218,180,195,191,179,192,196,217},
+	{201,185,204,187,186,200,205,188}
+//	 ulc,-| ,|- ,urc, | ,llc, - ,lrc
+};
+
 // Clear Screen
 void clrscr(){
 	printf("%c[2J",ESC);
@@ -42,10 +48,6 @@ void reverse(char on){
 }
 
 void window(int x1, int y1, int x2, int y2, char *str, int style){
-	char arr[2][8] = {
-		{218,180,195,191,179,192,196,217},
-		{201,185,204,187,186,200,205,188}
-	};
 	int minwidth = strlen(str) + 4;
 	int width = x2-x1+1;
 	int expandX, i;
@@ -57,7 +59,7 @@ void window(int x1, int y1, int x2, int y2, char *str, int style){
 	expandX = width-minwidth;
     
 	gotoxy(x1,y1);
-	printf("%c%c", arr[style][0], arr[style][1]);
+	printf("%c%c", frameChars[style][0], frameChars[style][1]);
 	reverse(1);
 	// blink(1);
 	printf("%s", str);
@@ -66,22 +68,45 @@ void window(int x1, int y1, int x2, int y2, char *str, int style){
 	};
 	reverse(0);
 	// blink(0);
-	printf("%c%c", arr[style][2], arr[style][3]);
+	printf("%c%c", frameChars[style][2], frameChars[style][3]);
 	
 	for(i=1; i<height; i++){
 		gotoxy(x1,y1+i);
-		printf("%c", arr[style][4]);
+		printf("%c", frameChars[style][4]);
 		gotoxy(x2,y1+i);
-		printf("%c", arr[style][4]);
+		printf("%c", frameChars[style][4]);
 	}
 	
 
 	gotoxy(x1,y2);
-	printf("%c", arr[style][5]);
+	printf("%c", frameChars[style][5]);
 	for(i=0; i<(width-2); i++){
-		printf("%c", arr[style][6]);
+		printf("%c", frameChars[style][6]);
 	};
-	printf("%c", arr[style][7]);
+	printf("%c", frameChars[style][7]);
+}
+
+void frame(int x1, int y1, int x2, int y2, int style){
+	int i, width = x2-x1, height = y2-y1;
+	//	{ulc,-| ,|- ,urc, | ,llc, - ,lrc}
+	gotoxy(x1,y1);
+	printf("%c", frameChars[style][0]);
+	for(i=0; i<width-1; i++){
+		printf("%c", frameChars[style][6]);
+	}
+	printf("%c", frameChars[style][3]);
+	for(i=1; i<height; i++){
+		gotoxy(x1,y1+i);
+		printf("%c", frameChars[style][4]);
+		gotoxy(x2,y1+i);
+		printf("%c", frameChars[style][4]);
+	}
+	gotoxy(x1,y2);
+	printf("%c", frameChars[style][5]);
+	for(i=0; i<(width-1); i++){
+		printf("%c", frameChars[style][6]);
+	};
+	printf("%c", frameChars[style][7]);
 }
 
 void fgcolor(int foreground) {

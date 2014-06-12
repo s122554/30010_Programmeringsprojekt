@@ -16,7 +16,7 @@ char getB(){
 		(~PDIN >> 3 & 0x01);
 }
 
-void setup(){
+void init(){
 	
 	init_uart(_UART0,_DEFFREQ,_DEFBAUD);	// set-up UART0 to 57600, 8n1
 
@@ -25,24 +25,49 @@ void setup(){
 	PDDD |= (1 << 3); // Set PD3 to input
 
 	init_time();
-
+	init_led();
 }
 
 
 void main(){
-	long count=0, last_count=0;
 	struct TVector v;
-	int b_last, b;
-
-	setup();
-	LEDinit();
-
-	LEDsetString("    Hvordan sker det nu ????", 0);
-
+	init();
 	clrscr();
+	// window(20,5,80,10,"Hejsa",0);
+	frame(1,1,160,80,1);
 	
+	
+	do {} while (1 != 2); // stay here always
+}
+
+
+
+	// LEDsetString("    Hvordan sker det nu ????", 0);
+
+/*
+	window(20,5,80,10,"Hejsa",0);
+	window(20,20,50,25,"Yiir mayn",1);
+
+	printf("Sin %ld: ",43);
+	printFix(expand(sin(43)));
+	printf("\n");
+	printf("Cos %ld: ",43);
+	printFix(expand(cos(43)));
+	printf("\n");
+	
+	setVec(&v, -4, -4);
+	rotate(&v,1280);
+	printf("Vec: [");
+	printFix(expand(v.x));
+	printf(",");
+	printFix(expand(v.y));
+	printf("]\n");
+
 	while(1){
 		LEDupdate();
+		long count=0, last_count=0;
+		int b_last, b;
+
 		b = getB();
 		if(b != b_last){
 			if(b == 0x01){ 
@@ -67,29 +92,4 @@ void main(){
 		}
 	}
 
-	do {} while (1 != 2); // stay here always
-}
-
-
-
-
-
-/*
-	window(20,5,80,10,"Hejsa",0);
-	window(20,20,50,25,"Yiir mayn",1);
-
-	printf("Sin %ld: ",43);
-	printFix(expand(sin(43)));
-	printf("\n");
-	printf("Cos %ld: ",43);
-	printFix(expand(cos(43)));
-	printf("\n");
-	
-	setVec(&v, -4, -4);
-	rotate(&v,1280);
-	printf("Vec: [");
-	printFix(expand(v.x));
-	printf(",");
-	printFix(expand(v.y));
-	printf("]\n");
 */

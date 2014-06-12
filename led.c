@@ -14,7 +14,7 @@ char LEDcharNum = 0;
 unsigned int LEDdigit=0, LEDcolumn=0;
 char videoBuf[5][6]; 
 
-void LEDinit(){
+void init_led(){
 	// Set LED ports as output
 	PEDD = 0x00;
 	PGDD = 0x00;
