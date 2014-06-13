@@ -46,7 +46,7 @@ void update_ball(){
 
 	if((xPos >= strikerPos && xPos <= strikerPos + strikerLen) && yPos == frameBounds[1]+2){
 		 							
-		rotate(&ball_v, 2*vecAngle(&norm,&ball_v));
+		rotate(&ball_v, 2*vecAngle(&norm, &ball_v));
 
 	}
 
@@ -111,19 +111,27 @@ void drawStriker(){
 
 
 void main(){
-	char tick_ball,tick_ball_last, tick_striker,tick_striker_last;
+	char tick_ball,tick_ball_last, tick_striker, tick_striker_last;
 	int b_last, b;
+	long mul;
 	init();
 	clrscr();
 
 	setVec(&ball_v, 1, 1);
 	setVec(&norm, 0, 1);
-
-
+//	mul = ball_v.x * (norm.x >> FIX14_SHIFT);
+//	mul = FIX14_MULT(ball_v.x, norm.x);
+	//mul = dotP(&ball_v, &norm);
+	//mul = vecAngle(&norm, &ball_v);
+	mul = vecMag(&ball_v);
+//	mul = FIX14_POW(1 << 13,2);
+//	mul = FIX14_SQRT( 0x03 << 13 );  // 0x03 << 13 = 1.5 dec
+	// mul = 1 << 11; 
 
 	printf("dotP v: ");
-	printFix(expand(dotP(&ball_v,&norm)));
-	printf(")\n");
+	printFix(expand(mul));
+
+	printf("\n");
 
 	/*
 	frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
