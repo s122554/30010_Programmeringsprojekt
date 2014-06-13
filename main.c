@@ -39,8 +39,13 @@ void init_ball(){
 }
 
 void update_ball(){
-	int xPos = ball_p.x >> 14;
-	int yPos = ball_p.y >> 14;
+	int xPos = ball_p.x >> FIX14_SHIFT;
+	int yPos = ball_p.y >> FIX14_SHIFT;
+
+	if((xPos >= strikerPos && xPos <= strikerPos + strikerLen) && yPos == frameBounds[1]+2){
+		rotate(&ball_v, 128);
+
+	}
 
 	if(xPos <= frameBounds[0]+1 || xPos >= frameBounds[2]-1){
 		ball_v.x = -ball_v.x;
@@ -48,9 +53,21 @@ void update_ball(){
 	if(yPos <= frameBounds[1]+1 || yPos >= frameBounds[3]-1){
 		ball_v.y = -ball_v.y;
 	}
+	
+
 
 	ball_p.x += ball_v.x;
 	ball_p.y += ball_v.y;
+
+	
+}
+
+void drawBall(){
+	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
+	printf(" ");
+	update_ball();
+	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
+	printf("O");
 }
 
 void printBallInfo(){
@@ -87,13 +104,8 @@ void drawStriker(){
 	}
 }
 
-void drawBall(){
-	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
-	printf(" ");
-	update_ball();
-	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
-	printf("O");
-}
+
+
 
 void main(){
 	char tick_ball,tick_ball_last, tick_striker,tick_striker_last;
@@ -105,7 +117,7 @@ void main(){
 	init_ball();
 
 	strikerPos = 20;
-	strikerLen = 7;
+	strikerLen = 9;
 	// drawStriker();
 
 	while(1){
