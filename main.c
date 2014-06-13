@@ -10,6 +10,7 @@
 volatile unsigned long milis;
 volatile char LEDupdateFLAG;
 
+struct TVector norm;
 struct TVector ball_p;
 struct TVector ball_v;
 long strikerPos, strikerLen;
@@ -31,6 +32,7 @@ void init(){
 
 	init_time();
 	init_led();
+
 }
 
 void init_ball(){
@@ -43,7 +45,8 @@ void update_ball(){
 	int yPos = ball_p.y >> FIX14_SHIFT;
 
 	if((xPos >= strikerPos && xPos <= strikerPos + strikerLen) && yPos == frameBounds[1]+2){
-		rotate(&ball_v, 128);
+		 							
+		rotate(&ball_v, 2*vecAngle(&norm,&ball_v));
 
 	}
 
@@ -113,11 +116,22 @@ void main(){
 	init();
 	clrscr();
 
+	setVec(&ball_v, 1, 1);
+	setVec(&norm, 0, 1);
+
+
+
+	printf("dotP v: ");
+	printFix(expand(dotP(&ball_v,&norm)));
+	printf(")\n");
+
+	/*
 	frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
 	init_ball();
 
 	strikerPos = 20;
 	strikerLen = 9;
+	setVec(&norm, 0, 1);
 	// drawStriker();
 
 	while(1){
@@ -145,6 +159,7 @@ void main(){
 	
 
 	}
+	*/
 	
 
 

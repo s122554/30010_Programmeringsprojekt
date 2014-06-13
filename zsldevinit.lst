@@ -1,4 +1,4 @@
-ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 12-Jun-14     14:37:19     page:   1
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 13-Jun-14     11:18:44     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -54,10 +54,10 @@ PC     Object              I  Line    Source
                            A    50        call _open_PortE					; initi
                            A    51    .endif
                            A    52    
-ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 12-Jun-14     14:37:19     page:   2
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 13-Jun-14     11:18:44     page:   2
 
 
-PC     Object              I  Line    Source L:\GitHub\30010_Programmeringsprojekt\zsldevinit.asm
+PC     Object              I  Line    Source D:\GitHub\30010_Programmeringsprojekt\zsldevinit.asm
                            A    53    .ifdef _ZSL_DEVICE_PORTF
                            A    54    	XREF _open_PortF
                            A    55    
@@ -110,10 +110,10 @@ PC     Object              I  Line    Source L:\GitHub\30010_Programmeringsproje
                            A   102        call _close_PortA					; close
                            A   103    .endif
                            A   104    
-ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 12-Jun-14     14:37:19     page:   3
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 13-Jun-14     11:18:44     page:   3
 
 
-PC     Object              I  Line    Source L:\GitHub\30010_Programmeringsprojekt\zsldevinit.asm
+PC     Object              I  Line    Source D:\GitHub\30010_Programmeringsprojekt\zsldevinit.asm
                            A   105    .ifdef _ZSL_DEVICE_PORTB
                            A   106    	XREF _close_PortB
                            A   107    
@@ -166,10 +166,10 @@ PC     Object              I  Line    Source L:\GitHub\30010_Programmeringsproje
                            A   154    	XREF _close_UART1
                            A   155    
                            A   156    	call _close_UART1				; close UAR
-ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 12-Jun-14     14:37:19     page:   4
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 13-Jun-14     11:18:44     page:   4
 
 
-PC     Object              I  Line    Source L:\GitHub\30010_Programmeringsprojekt\zsldevinit.asm
+PC     Object              I  Line    Source D:\GitHub\30010_Programmeringsprojekt\zsldevinit.asm
                            A   157    .endif
                            A   158    
 000001 AF                  A   159    	ret
@@ -222,10 +222,10 @@ PC     Object              I  Line    Source L:\GitHub\30010_Programmeringsproje
                            A   206    	db PORTGMASK
                            A   207    .endif
                            A   208    .ifdef _ZSL_DEVICE_PORTH
-ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 12-Jun-14     14:37:19     page:   5
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 13-Jun-14     11:18:44     page:   5
 
 
-PC     Object              I  Line    Source L:\GitHub\30010_Programmeringsprojekt\zsldevinit.asm
+PC     Object              I  Line    Source D:\GitHub\30010_Programmeringsprojekt\zsldevinit.asm
                            A   209    	XDEF _porthmask
                            A   210    _porthmask:
                            A   211    	db PORTHMASK

@@ -10,8 +10,10 @@
 
 // === LUT SIZES ===
 #define SIN_SIZE 512
+#define ARCSIN_SIZE 128
 
 // === LUT DECLARATIONS ===
 extern const signed short SIN[512];
+extern const signed short ARCSIN[128];
 
 #endif	// SINLUT_H

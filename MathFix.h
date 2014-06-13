@@ -12,8 +12,13 @@ struct TVector {
 void setVec(struct TVector *v, long xin, long yin);
 long sin(long x);
 long cos(long x);
+long arcsin(long x);
+long arccos(long x);
 void rotate(struct TVector *v, long phi);
 void printFix(long i);
 long expand(long i);
+long dotP(struct TVector *v1, struct TVector *v2);
+long vecMagSquared(struct TVector *v1);
+long vecAngle(struct TVector *v1, struct TVector *v2);
 
 #endif // _MATHFIX_H_
