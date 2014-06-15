@@ -16,7 +16,7 @@ long cos(long x){
 }
 
 long arcsin(long x){
-	if(x >=0){ 
+	if(x >= 0){ 
 		return ARCSIN[x & 0x7F];
 	}
 	else {
@@ -25,12 +25,7 @@ long arcsin(long x){
 }
 
 long arccos(long x){
-	if(x >=0){ 
-		return ARCSIN[x & 0x7F] - (128 << FIX14_SHIFT);
-	}
-	else {
-		return -(ARCSIN[x & 0x7F] - (128 << FIX14_SHIFT));
-	}
+	return (128 << FIX14_SHIFT) - arcsin(x];
 }
 
 long dotP(struct TVector *v1, struct TVector *v2){
@@ -40,8 +35,6 @@ long dotP(struct TVector *v1, struct TVector *v2){
 long vecMagSquared(struct TVector *v1){
 	return FIX14_MULT(v1->x, v1->x) + FIX14_MULT(v1->y, v1->y);
 }
-
-
 
 long vecAngle(struct TVector *v1, struct TVector *v2){
 	long cosPhi = FIX14_DIV(dotP(v1,v2),23170);
