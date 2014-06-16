@@ -16,16 +16,18 @@ long cos(long x){
 }
 
 long arcsin(long x){
-	if(x >= 0){ 
-		return ARCSIN[x & 0x7F];
+	long index = x >> 7;
+	if(x >= 0){	
+		x = ARCSIN[index & 0x7F];
 	}
 	else {
-		return -ARCSIN[x & 0x7F];
+		x = -ARCSIN[index & 0x7F];
 	}
+	return x * (FIX14_PI_256 >> FIX14_SHIFT);
 }
 
 long arccos(long x){
-	return (128 << FIX14_SHIFT) - arcsin(x];
+	return (128 << FIX14_SHIFT) - arcsin(x);
 }
 
 long dotP(struct TVector *v1, struct TVector *v2){

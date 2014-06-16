@@ -2,8 +2,12 @@
 #define _MATHFIX_H_
 
 #define FIX14_SHIFT 14
-#define FIX14_MULT(a,b) ( (a)*((b) >> FIX14_SHIFT ))
+#define FIX14_MULT(a,b) ( (a)*(b) >> FIX14_SHIFT )
 #define FIX14_DIV(a,b)  ( ((a) << FIX14_SHIFT) / (b))
+#define FIX14_KONST (1 << 14)
+#define FIX14_PI 51472
+#define FIX14_PI_256 1335088
+
 
 struct TVector {
 	long x, y;
