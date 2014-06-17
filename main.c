@@ -37,7 +37,6 @@ void init(){
 
 	init_time();
 	init_led();
-
 }
 
 long angle(){
@@ -127,14 +126,14 @@ void drawBall(){
 	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
 	printf("O");
 }
-
+/*
 void init_ball(){
 	setVec(&ball_p, strikerPos+(strikerLen/2), frameBounds[3]-2);
 	setVec(&ball_v, 0, 0);
 	// rotate(&ball_v, 40);
 	drawBall();
 }
-
+*/
 void printStatus(unsigned char x, unsigned char y){
 	gotoxy(x,y);
 	printf("BallPos: (");
@@ -187,17 +186,23 @@ void moveStriker(char movex){
 
 void drawStriker(){
 	char i;
+	gotoxy(strikerPos,frameBounds[3]-1);
 	for (i=0; i<strikerLen;i++){
 		printf("%c",223);
 	}
 }
 
 void initGame(){
-	setVec(&ball_v, 0, 0);
+	// Init Striker
 	strikerLen = 9;
 	strikerPos = (frameBounds[2]-frameBounds[0])/2 - strikerLen/2;
-	init_ball();
-	gotoxy(strikerPos,frameBounds[3]-1);
+
+	// Init Ball
+	setVec(&ball_p, strikerPos+(strikerLen/2), frameBounds[3]-2);
+	setVec(&ball_v, 0, 0);
+
+	drawStriker();
+	drawBall();
 }
 
 void setGameState(int state){
@@ -226,7 +231,7 @@ void main(){
 	clrscr();	
 	frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
 
-
+	initGame();
 	//setGameState(0);
 		
 	while(1){
