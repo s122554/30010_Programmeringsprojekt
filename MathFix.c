@@ -18,10 +18,10 @@ long cos(long x){
 long arcsin(long x){
 	long index = x >> 7;
 	if(x >= 0){	
-		x = ARCSIN[index & 0x7F];
+		x = ARCSIN[index];
 	}
 	else {
-		x = -ARCSIN[index & 0x7F];
+		x = -ARCSIN[index];
 	}
 	return x * (FIX14_PI_256 >> FIX14_SHIFT);
 }

@@ -54,17 +54,34 @@ void update_ball(){
 	int yPos = ball_p.y >> FIX14_SHIFT;
 	int next_xPos = (ball_p.x + ball_v.x) >> FIX14_SHIFT;
 	int next_yPos = (ball_p.y + ball_v.y) >> FIX14_SHIFT;
-	long angleToStrikerNorm = arccos(-ball_v.y);
-	int rotation, caseSelect;
+	long incidenceAngle = angle();
+	int rotation=0, caseSelect;
 	int strikerCen = (strikerLen/2);
 
 	if(next_yPos == frameBounds[3]-1){
 		if( (next_xPos >= strikerPos) && (next_xPos <= strikerPos + strikerLen) ){
-			rotation = (angle() >> FIX14_SHIFT);
+			caseSelect = next_xPos - strikerPos;
+			if(caseSelect == 0){
+				ball_v.x = -ball_v.x;
+				ball_v.y = -ball_v.y;
+			}
+			else if(caseSelect > 0 && caseSelect < strikerCen){
+				ball_v.x = -ball_v.x;
+				ball_v.y = -ball_v.y;
+				rotation = -(incidenceAngle/2 >> FIX14_SHIFT);
+			}
+			else if(caseSelect > strikerCen && caseSelect <= strikerLen){
+				ball_v.y = -ball_v.y;
+				rotation = (incidenceAngle/2 >> FIX14_SHIFT);
+			}
+			else {
+				ball_v.y = -ball_v.y;
+			}
+			
 			if(ball_v.x < 0){
  		    	rotation = -rotation; 
 			}
-			rotate(&ball_v, rotation + 256);
+			rotate(&ball_v, rotation);
 
 			
 
@@ -112,6 +129,8 @@ void printStatus(){
 	printFix(expand(ball_v.y));
 	printf(") - AngleToNorm: ");
 	printFix(expand(angle()));
+	printf(") - AngleToNorm/2: ");
+	printFix(expand(angle()/2));
 }
 
 void printBallInfo(){
@@ -168,18 +187,14 @@ void main(){
 
 
 	printf("Sin %ld: ",128);
-	printFix(expand(arcsin(sin(128))));
+	printFix(expand(arcsin(1<<14)));
 	printf("\n");
 	printf("Cos %ld: ",128);
 	printFix(expand(arccos(cos(128))));
 	printf("\n");
 
-
-
 	
 	while(1){
-		
-
 		tick_ball = (milis & 0x40);
 		tick_striker  = (milis & 0x20);
 
