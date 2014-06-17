@@ -83,6 +83,7 @@ void update_ball(){
 	long incidenceAngle = angle();
 	int rotation=0, caseSelect;
 	int strikerCen = (strikerLen/2);
+	char column=0;
 
 	if(ball_v.x == 0 && ball_v.y == 0 ){
 		setVec(&ball_p, strikerPos+(strikerLen/2), frameBounds[3]-2);
@@ -136,6 +137,25 @@ void update_ball(){
 		}
 
 		//reflect ball on tiles
+		
+		/* A too heavy (processor-wise) for loop, for doing the same stuff as below
+		for(column=0; column=7; column++){
+			if(next_xPos > frameBounds[0]+2+column*17 && next_xPos <= frameBounds[0]+2+column*17){
+				int n;
+				for(n=0; n<10; n++){
+						if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
+						ball_v.y = -ball_v.y;
+						Tiles[column][n].destroyed = 1;
+						drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
+						}
+				}
+			}
+		}
+
+		*/
+
+		
+		// Faster, working, but but more spacious way to check
 		if(next_xPos > frameBounds[0]+2 && next_xPos <= frameBounds[0]+2+17){
 			int n,column=0;
 			for(n=0; n<10; n++){
