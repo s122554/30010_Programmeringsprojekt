@@ -355,7 +355,7 @@ Docking=True
 DockingStyle=61440
 ExStyle=3889
 MDIChild=False
-MRUDockBottomPos=933
+MRUDockBottomPos=893
 MRUDockID=0
 MRUDockLeftPos=0
 MRUDockRightPos=180
@@ -369,7 +369,7 @@ MRUFloatYPos=6822976
 MRUHorzDockCX=300
 MRUHorzDockCY=180
 MRUVertDockCX=180
-MRUVertDockCY=935
+MRUVertDockCY=895
 PctWidth=1000000
 PrevFloating=False
 ResourceID=0
@@ -396,7 +396,7 @@ MRUFloatCX=0
 MRUFloatCY=0
 MRUFloatStyle=8196
 MRUFloatXPos=-2147483648
-MRUFloatYPos=6822976
+MRUFloatYPos=5136320
 MRUHorzDockCX=1600
 MRUHorzDockCY=29
 MRUVertDockCX=0
@@ -430,7 +430,7 @@ MRUFloatCX=0
 MRUFloatCY=0
 MRUFloatStyle=8196
 MRUFloatXPos=-2147483648
-MRUFloatYPos=4243408
+MRUFloatYPos=5825120
 MRUHorzDockCX=296
 MRUHorzDockCY=30
 MRUVertDockCX=0
@@ -490,10 +490,6 @@ ptn_Child2=ChildFrames
 
 [WorkState_v1_1.Frames.ChildFrames]
 ptn_Child1=Document-0
-ptn_Child2=Document-1
-ptn_Child3=Document-2
-ptn_Child4=Document-3
-ptn_Child5=Document-4
 
 [WorkState_v1_1.Frames.ChildFrames.Document-0]
 ptn_Child1=ViewFrame-0
@@ -503,51 +499,11 @@ DocPathName=.\main.c
 DocTemplateIndex=0
 DocumentString=IDE Document
 IsActiveChildFrame=True
-WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPDBAAAAAAABAAAAAAEGFAAAAADCDAAAAA
-
-[WorkState_v1_1.Frames.ChildFrames.Document-1]
-ptn_Child1=ViewFrame-0
-
-[WorkState_v1_1.Frames.ChildFrames.Document-1.ViewFrame-0]
-DocPathName=.\MathFix.c
-DocTemplateIndex=0
-DocumentString=IDE Document
-IsActiveChildFrame=False
-WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPKNAAAAAACPPPPPPPJEFAAAAACGCAAAAA
-
-[WorkState_v1_1.Frames.ChildFrames.Document-2]
-ptn_Child1=ViewFrame-0
-
-[WorkState_v1_1.Frames.ChildFrames.Document-2.ViewFrame-0]
-DocPathName=.\asin2.h
-DocTemplateIndex=0
-DocumentString=IDE Document
-IsActiveChildFrame=False
-WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPLEAAAAAALEAAAAAAKLEAAAAALLCAAAAA
-
-[WorkState_v1_1.Frames.ChildFrames.Document-3]
-ptn_Child1=ViewFrame-0
-
-[WorkState_v1_1.Frames.ChildFrames.Document-3.ViewFrame-0]
-DocPathName=.\sinLUT.c
-DocTemplateIndex=0
-DocumentString=IDE Document
-IsActiveChildFrame=False
-WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPBOAAAAAAGPPPPPPPAFFAAAAAGGCAAAAA
-
-[WorkState_v1_1.Frames.ChildFrames.Document-4]
-ptn_Child1=ViewFrame-0
-
-[WorkState_v1_1.Frames.ChildFrames.Document-4.ViewFrame-0]
-DocPathName=.\asin2.c
-DocTemplateIndex=0
-DocumentString=IDE Document
-IsActiveChildFrame=False
-WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPIMCAAAAAKPPPPPPPHDHAAAAAKGCAAAAA
+WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPHCAAAAAAECAAAAAAIHFAAAAAHDDAAAAA
 
 [WorkState_v1_1.Frames.MainFrame]
 Title=ArkanoidZ8 -- ZDS II - Z8 Encore! Family -- main.c
-WindowPlacement=MCAAAAAACAAAAAAADAAAAAAAAADIPPPPAADIPPPPPPPPPPPPPPPPPPPPEKGAAAAABHAAAAAAEFLAAAAADMDAAAAA
+WindowPlacement=MCAAAAAACAAAAAAADAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPMAAAAAAMHAAAAAAPHFAAAAAOMDAAAAA
 
 [WorkState_v1_1.ToolBarMgr]
 CoolLook=True
