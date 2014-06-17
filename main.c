@@ -11,13 +11,23 @@ volatile unsigned long milis;
 volatile char LEDupdateFLAG;
 volatile char ball_updateFLAG;
 volatile char striker_updateFLAG;
+volatile unsigned int ball_milis;
+volatile unsigned int striker_milis;
+char frameColor = 15;
+char strikerColor = 4;
+char defaultTileColor = 6;
 
-
-char gameState=0, ballMoving=0;
+char gameState, gameState_last = -1, ballMoving=0;
 
 struct TVector ball_p;
 struct TVector ball_v;
 unsigned char strikerPos, strikerLen, striker_v;
+
+struct Tile {
+	unsigned char type, hits, destroyed, color;
+};
+
+struct Tile Tiles[8][12];
 
 int frameBounds[4] = {2,2,140,60};
 
@@ -25,6 +35,13 @@ char getB(){
 	return	// 0 0 0 0 0 F7 F6 D3
 		(~PFIN >> 5 & 0x06) +
 		(~PDIN >> 3 & 0x01);
+}
+
+long angle(){
+	if(ball_v.y <0)
+		return arccos(-ball_v.y);
+	 else
+	 	return arccos(ball_v.y);
 }
 
 void init(){
@@ -38,14 +55,6 @@ void init(){
 	init_time();
 	init_led();
 }
-
-long angle(){
-	if(ball_v.y <0)
-		return arccos(-ball_v.y);
-	 else
-	 	return arccos(ball_v.y);
-}
-
 
 void update_ball(){
 	int xPos = ball_p.x >> FIX14_SHIFT;
@@ -99,7 +108,7 @@ void update_ball(){
 		}
 		else if(next_yPos >= frameBounds[3]){
 			// You are dead !
-			// setGameState(0);
+			gameState = 0;
 		}
 	
 		// reflect ball on side walls !
@@ -112,28 +121,56 @@ void update_ball(){
 	}
 }
 
-struct TVector nextBallPos(){
-	struct TVector nextPos;
-	nextPos.x = ball_p.x + ball_v.x;
-	nextPos.y = ball_p.y + ball_v.y;
-	return nextPos;
-}
-
 void drawBall(){
+	fgcolor(frameColor);
 	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
 	printf(" ");
 	update_ball();
 	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
 	printf("O");
 }
-/*
-void init_ball(){
+
+void drawStriker(){
+	char i;
+	fgcolor(frameColor);
+	for (i=0; i<strikerLen;i++){
+		printf("%c",223);
+	}
+}
+
+void initGame(){
+	int n,i;
+
+	// Draw Tiles
+	for(n=0; n<10; n++){
+		for(i=0; i<8; i++){
+			Tiles[i][n].type = 0;
+			Tiles[i][n].hits = 0;
+			Tiles[i][n].color = defaultTileColor;
+			fgcolor(Tiles[i][n].color);
+			if(!Tiles[i][n].destroyed){
+				drawTile(frameBounds[0]+2+i*17,frameBounds[1]+1+n*3, 17, 3, (n+i+1)%2);
+			}
+		}
+	}
+
+	// Init Striker
+	strikerLen = 9;
+	fgcolor(frameColor);
+	strikerPos = (frameBounds[2]-frameBounds[0])/2 - strikerLen/2;
+
+	// Init Ball
 	setVec(&ball_p, strikerPos+(strikerLen/2), frameBounds[3]-2);
 	setVec(&ball_v, 0, 0);
-	// rotate(&ball_v, 40);
+	
+	// Draw Stuff
+	gotoxy(strikerPos,frameBounds[3]-1);
+	drawStriker();
 	drawBall();
+
+
 }
-*/
+
 void printStatus(unsigned char x, unsigned char y){
 	gotoxy(x,y);
 	printf("BallPos: (");
@@ -148,6 +185,7 @@ void printStatus(unsigned char x, unsigned char y){
 	printFix(expand(angle()));
 	gotoxy(x,y+1);
 	printf("StrikerPos: %03d", strikerPos);
+	printf(" - GameState: %03d", gameState);
 }
 
 void printBallInfo(){
@@ -184,62 +222,43 @@ void moveStriker(char movex){
 	}
 }
 
-void drawStriker(){
-	char i;
-	gotoxy(strikerPos,frameBounds[3]-1);
-	for (i=0; i<strikerLen;i++){
-		printf("%c",223);
-	}
-}
 
-void initGame(){
-	// Init Striker
-	strikerLen = 9;
-	strikerPos = (frameBounds[2]-frameBounds[0])/2 - strikerLen/2;
-
-	// Init Ball
-	setVec(&ball_p, strikerPos+(strikerLen/2), frameBounds[3]-2);
-	setVec(&ball_v, 0, 0);
-
-	drawStriker();
-	drawBall();
-}
-
-void setGameState(int state){
+void updateGameState(){
 	/*	0: Ball is on striker
 		1: Game is on
 	*/
-	switch(state){
-		case 0:
-			// startGame();
-			break;
-		case 1:
-			setVec(&ball_v, 1, 0);
-			rotate(&ball_v, -128 - striker_v * 51);
-			break;
-		default:
-			break;
+	if(gameState != gameState_last){
+		switch(gameState){
+			case 0:
+				clrscr();
+				fgcolor(frameColor);
+				frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
+				initGame();
+				break;
+			case 1:
+				setVec(&ball_v, 1, 0);
+				rotate(&ball_v, -128 - striker_v * 73);
+				break;
+			default:
+				break;
+		}
+		gameState_last = gameState;
 	}
-	gameState = state;
 }
 
 void main(){
-	char tick_ball,tick_ball_last, tick_striker, tick_striker_last;
-	int b_last, b;
+	int b_last, b, i, n;
 	long mul;
 	init();
-	clrscr();	
-	frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
+	clrscr();
 
-	initGame();
-	//setGameState(0);
-		
+	updateGameState();
+
 	while(1){
 		b = getB();
-		tick_ball = (milis & 0x40);
-		tick_striker  = (milis & 0x20);
+		updateGameState();
 
-		if(tick_striker != tick_striker_last){
+		if(striker_milis == 0){
 			if(b == 0x02){
 				moveStriker(-1);
 			}
@@ -247,24 +266,19 @@ void main(){
 				moveStriker(1);
 			}
 			if(gameState == 0 && (b & 0x01) == 1){
-				setGameState(1);
+				gameState = 1;
 			}
-			tick_striker_last = tick_striker;
 			printStatus(2,frameBounds[3]+2);
 		}
 
-		if(gameState == 1 && tick_ball != tick_ball_last && (ball_v.x != 0 || ball_v.y != 0) ){
+		if(gameState == 1 && ball_milis == 0 && (ball_v.x != 0 || ball_v.y != 0) ){
 			drawBall();
-			// printStatus(2,frameBounds[3]+2);
-			tick_ball_last = tick_ball;
 		}
 
+		// clock dividers!
+		if(++ball_milis == 40){ ball_milis = 0; }
+		if(++striker_milis == 20){ striker_milis = 0; }
 	}
-	
-	
-	
-
-
 
 	do {} while (1 != 2); // stay here always
 }

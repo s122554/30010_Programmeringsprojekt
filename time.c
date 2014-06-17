@@ -5,7 +5,6 @@
 extern volatile unsigned long milis;
 extern volatile char LEDupdateFLAG;
 
-
 #pragma interrupt
 void timer0int() {
 	milis++;
