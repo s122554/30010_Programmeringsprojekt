@@ -11,8 +11,6 @@ volatile unsigned long milis;
 volatile char LEDupdateFLAG;
 volatile char ball_updateFLAG;
 volatile char striker_updateFLAG;
-volatile unsigned int ball_milis;
-volatile unsigned int striker_milis;
 unsigned char column;
 char frameColor = 15;
 char strikerColor = 4;
@@ -20,6 +18,7 @@ char defaultTileColor = 6;
 
 char blocklen = 17;
 char blockh = 3;
+unsigned char tileRows = 10;
 
 char gameState, gameState_last = -1, ballMoving=0;
 
@@ -31,7 +30,14 @@ struct Tile {
 	unsigned char type, hits, destroyed, color;
 };
 
+struct GameState {
+	unsigned char lives, points;
+};
+
+char lives = 5;
+
 struct Tile Tiles[8][12];
+struct GameState Game;
 
 int frameBounds[4] = {2,2,139,60};
 
@@ -42,7 +48,7 @@ char getB(){
 }
 
 long angle(){
-	if(ball_v.y <0)
+	if(ball_v.y < 0)
 		return arccos(-ball_v.y);
 	 else
 	 	return arccos(ball_v.y);
@@ -64,11 +70,8 @@ void drawTiles(){
 	int n,i;
 
 // Draw Tiles
-	for(n=0; n<10; n++){
+	for(n=0; n<tileRows; n++){
 		for(i=0; i<8; i++){
-			Tiles[i][n].type = 0;
-			Tiles[i][n].hits = 0;
-			Tiles[i][n].color = defaultTileColor;
 			fgcolor(Tiles[i][n].color);
 			if(!Tiles[i][n].destroyed){
 				drawTile(frameBounds[0]+1+i*blocklen,frameBounds[1]+1+n*blockh, blocklen, blockh, (n+i+1)%2);
@@ -131,7 +134,10 @@ void update_ball(){
 		}
 		else if(next_yPos >= frameBounds[3]){
 			// You are dead !
-			gameState = 0;
+			if(--lives > 0) 
+				gameState = 0;
+			else 
+				gameState = 2;
 		}
 	
 		// reflect ball on side walls !
@@ -143,7 +149,7 @@ void update_ball(){
 		// Faster, working, but but more spacious way to check
 		if(next_xPos >= frameBounds[0]+1+column*blocklen && next_xPos <= frameBounds[0]+1+(column+1)*blocklen){
 			int n;
-			for(n=0; n<10; n++){
+			for(n=0; n<tileRows; n++){
 				if((next_yPos <= frameBounds[1]+3+n*3 && next_yPos >= frameBounds[1]+1+n*3) && !Tiles[column][n].destroyed){
 					if(next_yPos == frameBounds[1]+2+n*3) ball_v.x = -ball_v.x;
 					else ball_v.y = -ball_v.y;
@@ -192,11 +198,10 @@ void initGame(){
 	gotoxy(strikerPos,frameBounds[3]-1);
 	drawStriker();
 	drawBall();
-
-
 }
 
 void printStatus(unsigned char x, unsigned char y){
+	/*
 	gotoxy(x,y);
 	printf("BallPos: (");
 	printFix(expand(ball_p.x));
@@ -212,6 +217,9 @@ void printStatus(unsigned char x, unsigned char y){
 	printf("StrikerPos: %03d", strikerPos);
 	printf(" - GameState: %03d", gameState);
 	printf(" - Column: %03d", column);
+	*/
+	gotoxy(x,y);
+	printf("Lives: %d", lives);
 }
 
 void printBallInfo(){
@@ -249,21 +257,42 @@ void moveStriker(char movex){
 }
 
 
+void newGame(unsigned char level){
+	int n,i;
+	if(level == 1){
+		lives = 5;
+		tileRows = 6;
+	}
+
+	for(n=0; n<tileRows; n++){
+		for(i=0; i<8; i++){
+			Tiles[i][n].destroyed = 0;
+			Tiles[i][n].hits = 0;
+			Tiles[i][n].color = defaultTileColor;
+		}
+	}
+
+}
+
 void updateGameState(){
 	/*	0: Ball is on striker
 		1: Game is on
 	*/
 	if(gameState != gameState_last){
 		switch(gameState){
-			case 0:
+			case 0: // Reload LvL
 				clrscr();
 				fgcolor(frameColor);
 				frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
 				initGame();
+				LEDsetString("LIF",0);
 				break;
-			case 1:
+			case 1: // GamePlay
 				setVec(&ball_v, 1, 0);
 				rotate(&ball_v, -128 - striker_v * 51);
+				break;
+			case 2: // Game Over
+				LEDsetString("    Game Over", 0);
 				break;
 			default:
 				break;
@@ -273,12 +302,15 @@ void updateGameState(){
 }
 
 void main(){
+	unsigned int ball_milis, striker_milis, print_milis;
 	int b_last, b, i, n;
 	long mul;
 	init();
 	clrscr();
-
+	
+	newGame(1);
 	updateGameState();
+	LEDsetString("HEJ", 0);
 
 	while(1){
 		b = getB();
@@ -294,7 +326,6 @@ void main(){
 			if(gameState == 0 && (b & 0x01) == 1){
 				gameState = 1;
 			}
-			printStatus(2,frameBounds[3]+2);
 		}
 
 		if(gameState == 1 && ball_milis == 0 && (ball_v.x != 0 || ball_v.y != 0) ){
@@ -302,11 +333,14 @@ void main(){
 		}
 
 		// clock dividers!
-		if(++ball_milis == 40){ ball_milis = 0; }
-		if(++striker_milis == 20){ striker_milis = 0; }
-
+		if(++ball_milis == 100){ ball_milis = 0; }
+		if(++striker_milis == 61){ striker_milis = 0; }
+		if(++print_milis == 203){ 
+			print_milis = 0;
+			printStatus(2,frameBounds[3]+2);
+		}
 		LEDupdate();
-		LEDsetString("    Hvordan sker det nu ????", 0);
+		
 	}
 
 	do {} while (1 != 2); // stay here always
