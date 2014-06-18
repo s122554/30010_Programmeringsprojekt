@@ -13,9 +13,13 @@ volatile char ball_updateFLAG;
 volatile char striker_updateFLAG;
 volatile unsigned int ball_milis;
 volatile unsigned int striker_milis;
+char column;
 char frameColor = 15;
 char strikerColor = 4;
 char defaultTileColor = 6;
+
+char blocklen = 17;
+char blockh = 3;
 
 char gameState, gameState_last = -1, ballMoving=0;
 
@@ -58,8 +62,6 @@ void init(){
 
 void drawTiles(){
 	int n,i;
-	char blocklen = 17;
-	char blockh = 3;
 
 // Draw Tiles
 	for(n=0; n<10; n++){
@@ -83,7 +85,7 @@ void update_ball(){
 	long incidenceAngle = angle();
 	int rotation=0, caseSelect;
 	int strikerCen = (strikerLen/2);
-	char column=0;
+	column = (next_xPos-1) / blocklen;
 
 	if(ball_v.x == 0 && ball_v.y == 0 ){
 		setVec(&ball_p, strikerPos+(strikerLen/2), frameBounds[3]-2);
@@ -136,107 +138,19 @@ void update_ball(){
 			ball_v.x = -ball_v.x;
 		}
 
-		//reflect ball on tiles
-		
-		/* A too heavy (processor-wise) for loop, for doing the same stuff as below
-		for(column=0; column=7; column++){
-			if(next_xPos > frameBounds[0]+2+column*17 && next_xPos <= frameBounds[0]+2+column*17){
-				int n;
-				for(n=0; n<10; n++){
-						if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
-						ball_v.y = -ball_v.y;
-						Tiles[column][n].destroyed = 1;
-						drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
-						}
-				}
-			}
-		}
 
-		*/
-
-		
 		// Faster, working, but but more spacious way to check
-		if(next_xPos > frameBounds[0]+2 && next_xPos <= frameBounds[0]+2+17){
-			int n,column=0;
+		if(next_xPos > frameBounds[0]+2+column*blocklen && next_xPos <= frameBounds[0]+2+(column+1)*blocklen){
+			int n;
 			for(n=0; n<10; n++){
-					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
+					if( (next_yPos == frameBounds[1]+3+n*3 || next_yPos == frameBounds[1]+1+n*3) && !Tiles[column][n].destroyed){
 					ball_v.y = -ball_v.y;
 					Tiles[column][n].destroyed = 1;
-					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
+					drawTile(frameBounds[0]+2+column*blocklen,frameBounds[1]+1+n*3, blocklen, blockh, 79);
 					}
 			}
 		}
-		if(next_xPos > frameBounds[0]+2+17 && next_xPos <= frameBounds[0]+2+2*17){
-			int n,column=1;
-			for(n=0; n<10; n++){
-					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
-					ball_v.y = -ball_v.y;
-					Tiles[column][n].destroyed = 1;
-					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
-					}
-			}
-		}
-		if(next_xPos > frameBounds[0]+2+2*17 && next_xPos <= frameBounds[0]+2+3*17){
-			int n,column=2;
-			for(n=0; n<10; n++){
-					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
-					ball_v.y = -ball_v.y;
-					Tiles[column][n].destroyed = 1;
-					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
-					}
-			}
-		}
-		if(next_xPos > frameBounds[0]+2+3*17 && next_xPos <= frameBounds[0]+2+4*17){
-			int n,column=3;
-			for(n=0; n<10; n++){
-					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
-					ball_v.y = -ball_v.y;
-					Tiles[column][n].destroyed = 1;
-					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
-					}
-			}
-		}
-		if(next_xPos > frameBounds[0]+2+4*17 && next_xPos <= frameBounds[0]+2+5*17){
-			int n,column=4;
-			for(n=0; n<10; n++){
-					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
-					ball_v.y = -ball_v.y;
-					Tiles[column][n].destroyed = 1;
-					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
-					}
-			}
-		}
-		if(next_xPos > frameBounds[0]+2+5*17 && next_xPos <= frameBounds[0]+2+6*17){
-			int n,column=5;
-			for(n=0; n<10; n++){
-					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
-					ball_v.y = -ball_v.y;
-					Tiles[column][n].destroyed = 1;
-					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
-					}
-			}
-		}
-		if(next_xPos > frameBounds[0]+2+6*17 && next_xPos <= frameBounds[0]+2+7*17){
-			int n,column=6;
-			for(n=0; n<10; n++){
-					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
-					ball_v.y = -ball_v.y;
-					Tiles[column][n].destroyed = 1;
-					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
-					}
-			}
-		}
-		if(next_xPos > frameBounds[0]+2+7*17 && next_xPos <= frameBounds[0] + 1 + 8*17){
-			int n,column=7;
-			for(n=0; n<10; n++){
-					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
-					ball_v.y = -ball_v.y;
-					Tiles[column][n].destroyed = 1;
-					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
-					}
-			}	
-		}
-	
+
 		ball_p.x += ball_v.x;
 		ball_p.y += ball_v.y;	
 	}
@@ -295,6 +209,7 @@ void printStatus(unsigned char x, unsigned char y){
 	gotoxy(x,y+1);
 	printf("StrikerPos: %03d", strikerPos);
 	printf(" - GameState: %03d", gameState);
+	printf(" - Column: %03d", column);
 }
 
 void printBallInfo(){
