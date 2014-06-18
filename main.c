@@ -285,11 +285,12 @@ void updateGameState(){
 				fgcolor(frameColor);
 				frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
 				initGame();
-				LEDsetString("LIF",0);
+				LEDsetString("Play",0);
 				break;
 			case 1: // GamePlay
 				setVec(&ball_v, 1, 0);
 				rotate(&ball_v, -128 - striker_v * 51);
+				LEDsetString("    ",0);
 				break;
 			case 2: // Game Over
 				LEDsetString("    Game Over", 0);
@@ -310,7 +311,7 @@ void main(){
 	
 	newGame(1);
 	updateGameState();
-	LEDsetString("HEJ", 0);
+	LEDsetString("HEJS", 0);
 
 	while(1){
 		b = getB();

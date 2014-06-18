@@ -86,29 +86,6 @@ void window(int x1, int y1, int x2, int y2, char *str, int style){
 	printf("%c", frameChars[style][7]);
 }
 
-void frame(int x1, int y1, int x2, int y2, int style){
-	int i, width = x2-x1, height = y2-y1;
-	//	{ulc,-| ,|- ,urc, | ,llc, - ,lrc}
-	gotoxy(x1,y1);
-	printf("%c", frameChars[style][0]);
-	for(i=0; i<width-1; i++){
-		printf("%c", frameChars[style][6]);
-	}
-	printf("%c", frameChars[style][3]);
-	for(i=1; i<height; i++){
-		gotoxy(x1,y1+i);
-		printf("%c", frameChars[style][4]);
-		gotoxy(x2,y1+i);
-		printf("%c", frameChars[style][4]);
-	}
-	gotoxy(x1,y2);
-	printf("%c", frameChars[style][5]);
-	for(i=0; i<(width-1); i++){
-		printf("%c", frameChars[style][6]);
-	};
-	printf("%c", frameChars[style][7]);
-}
-
 void drawTile(unsigned char x, unsigned char y, unsigned char w, unsigned char h, char myChar){
 
 	int i1=0, i2=0;
@@ -175,4 +152,28 @@ void color(int foreground, int background) {
 void resetbgcolor() {
 // gray on black text, no underline, no blink, no reverse
   printf("%c[m", ESC);  
+}
+void frame(int x1, int y1, int x2, int y2, int style){
+	int i, width = x2-x1, height = y2-y1;
+	//	{ulc,-| ,|- ,urc, | ,llc, - ,lrc}
+	gotoxy(x1,y1);
+	printf("%c", frameChars[style][0]);
+	for(i=0; i<width-1; i++){
+		printf("%c", frameChars[style][6]);
+	}
+	printf("%c", frameChars[style][3]);
+	for(i=1; i<height; i++){
+		gotoxy(x1,y1+i);
+		printf("%c", frameChars[style][4]);
+		gotoxy(x2,y1+i);
+		printf("%c", frameChars[style][4]);
+	}
+	/*
+	gotoxy(x1,y2);
+	printf("%c", frameChars[style][5]);
+	for(i=0; i<(width-1); i++){
+		printf("%c", frameChars[style][6]);
+	};
+	printf("%c", frameChars[style][7]);
+	*/
 }
