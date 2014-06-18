@@ -260,25 +260,8 @@ void drawStriker(){
 }
 
 void initGame(){
-<<<<<<< HEAD
-	int n,i;
-
-	// Draw Tiles
-	for(n=0; n<10; n++){
-		for(i=0; i<8; i++){
-			Tiles[i][n].type = 0;
-			Tiles[i][n].hits = 0;
-			Tiles[i][n].color = defaultTileColor;
-			fgcolor(Tiles[i][n].color);
-			if(!Tiles[i][n].destroyed){
-				drawTile(frameBounds[0]+2+i*17,frameBounds[1]+1+n*3, 17, 3, (n+i+1)%2);
-			}
-		}
-	}
-=======
 
 	drawTiles();
->>>>>>> origin/master
 
 	// Init Striker
 	strikerLen = 9;
