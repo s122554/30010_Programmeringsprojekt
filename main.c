@@ -13,7 +13,7 @@ volatile char ball_updateFLAG;
 volatile char striker_updateFLAG;
 volatile unsigned int ball_milis;
 volatile unsigned int striker_milis;
-char column;
+unsigned char column;
 char frameColor = 15;
 char strikerColor = 4;
 char defaultTileColor = 6;
@@ -33,7 +33,7 @@ struct Tile {
 
 struct Tile Tiles[8][12];
 
-int frameBounds[4] = {2,2,140,60};
+int frameBounds[4] = {2,2,139,60};
 
 char getB(){
 	return	// 0 0 0 0 0 F7 F6 D3
@@ -71,7 +71,7 @@ void drawTiles(){
 			Tiles[i][n].color = defaultTileColor;
 			fgcolor(Tiles[i][n].color);
 			if(!Tiles[i][n].destroyed){
-				drawTile(frameBounds[0]+2+i*blocklen,frameBounds[1]+1+n*blockh, blocklen, blockh, (n+i+1)%2);
+				drawTile(frameBounds[0]+1+i*blocklen,frameBounds[1]+1+n*blockh, blocklen, blockh, (n+i+1)%2);
 			}
 		}
 	}
@@ -85,7 +85,8 @@ void update_ball(){
 	long incidenceAngle = angle();
 	int rotation=0, caseSelect;
 	int strikerCen = (strikerLen/2);
-	column = (next_xPos-1) / blocklen;
+	column = (next_xPos-frameBounds[0]-1) / blocklen;
+	if(column > 7) column = 7;
 
 	if(ball_v.x == 0 && ball_v.y == 0 ){
 		setVec(&ball_p, strikerPos+(strikerLen/2), frameBounds[3]-2);
@@ -140,14 +141,15 @@ void update_ball(){
 
 
 		// Faster, working, but but more spacious way to check
-		if(next_xPos > frameBounds[0]+2+column*blocklen && next_xPos <= frameBounds[0]+2+(column+1)*blocklen){
+		if(next_xPos >= frameBounds[0]+1+column*blocklen && next_xPos <= frameBounds[0]+1+(column+1)*blocklen){
 			int n;
 			for(n=0; n<10; n++){
-					if( (next_yPos == frameBounds[1]+3+n*3 || next_yPos == frameBounds[1]+1+n*3) && !Tiles[column][n].destroyed){
-					ball_v.y = -ball_v.y;
+				if((next_yPos <= frameBounds[1]+3+n*3 && next_yPos >= frameBounds[1]+1+n*3) && !Tiles[column][n].destroyed){
+					if(next_yPos == frameBounds[1]+2+n*3) ball_v.x = -ball_v.x;
+					else ball_v.y = -ball_v.y;
 					Tiles[column][n].destroyed = 1;
-					drawTile(frameBounds[0]+2+column*blocklen,frameBounds[1]+1+n*3, blocklen, blockh, 79);
-					}
+					drawTile(frameBounds[0]+1+column*blocklen,frameBounds[1]+1+n*3, blocklen, blockh, 79);
+				}
 			}
 		}
 
@@ -261,7 +263,7 @@ void updateGameState(){
 				break;
 			case 1:
 				setVec(&ball_v, 1, 0);
-				rotate(&ball_v, -128 - striker_v * 73);
+				rotate(&ball_v, -128 - striker_v * 51);
 				break;
 			default:
 				break;
@@ -281,7 +283,7 @@ void main(){
 	while(1){
 		b = getB();
 		updateGameState();
-
+		
 		if(striker_milis == 0){
 			if(b == 0x02){
 				moveStriker(-1);
@@ -302,6 +304,9 @@ void main(){
 		// clock dividers!
 		if(++ball_milis == 40){ ball_milis = 0; }
 		if(++striker_milis == 20){ striker_milis = 0; }
+
+		LEDupdate();
+		LEDsetString("    Hvordan sker det nu ????", 0);
 	}
 
 	do {} while (1 != 2); // stay here always
