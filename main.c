@@ -53,7 +53,26 @@ void init(){
 	PDDD |= (1 << 3); // Set PD3 to input
 
 	init_time();
-	init_led();
+	init_led();	
+}
+
+void drawTiles(){
+	int n,i;
+	char blocklen = 17;
+	char blockh = 3;
+
+// Draw Tiles
+	for(n=0; n<10; n++){
+		for(i=0; i<8; i++){
+			Tiles[i][n].type = 0;
+			Tiles[i][n].hits = 0;
+			Tiles[i][n].color = defaultTileColor;
+			fgcolor(Tiles[i][n].color);
+			if(!Tiles[i][n].destroyed){
+				drawTile(frameBounds[0]+2+i*blocklen,frameBounds[1]+1+n*blockh, blocklen, blockh, (n+i+1)%2);
+			}
+		}
+	}
 }
 
 void update_ball(){
@@ -64,6 +83,7 @@ void update_ball(){
 	long incidenceAngle = angle();
 	int rotation=0, caseSelect;
 	int strikerCen = (strikerLen/2);
+	char column=0;
 
 	if(ball_v.x == 0 && ball_v.y == 0 ){
 		setVec(&ball_p, strikerPos+(strikerLen/2), frameBounds[3]-2);
@@ -115,6 +135,107 @@ void update_ball(){
 		if(next_xPos <= frameBounds[0] || next_xPos >= frameBounds[2]){
 			ball_v.x = -ball_v.x;
 		}
+
+		//reflect ball on tiles
+		
+		/* A too heavy (processor-wise) for loop, for doing the same stuff as below
+		for(column=0; column=7; column++){
+			if(next_xPos > frameBounds[0]+2+column*17 && next_xPos <= frameBounds[0]+2+column*17){
+				int n;
+				for(n=0; n<10; n++){
+						if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
+						ball_v.y = -ball_v.y;
+						Tiles[column][n].destroyed = 1;
+						drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
+						}
+				}
+			}
+		}
+
+		*/
+
+		
+		// Faster, working, but but more spacious way to check
+		if(next_xPos > frameBounds[0]+2 && next_xPos <= frameBounds[0]+2+17){
+			int n,column=0;
+			for(n=0; n<10; n++){
+					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
+					ball_v.y = -ball_v.y;
+					Tiles[column][n].destroyed = 1;
+					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
+					}
+			}
+		}
+		if(next_xPos > frameBounds[0]+2+17 && next_xPos <= frameBounds[0]+2+2*17){
+			int n,column=1;
+			for(n=0; n<10; n++){
+					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
+					ball_v.y = -ball_v.y;
+					Tiles[column][n].destroyed = 1;
+					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
+					}
+			}
+		}
+		if(next_xPos > frameBounds[0]+2+2*17 && next_xPos <= frameBounds[0]+2+3*17){
+			int n,column=2;
+			for(n=0; n<10; n++){
+					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
+					ball_v.y = -ball_v.y;
+					Tiles[column][n].destroyed = 1;
+					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
+					}
+			}
+		}
+		if(next_xPos > frameBounds[0]+2+3*17 && next_xPos <= frameBounds[0]+2+4*17){
+			int n,column=3;
+			for(n=0; n<10; n++){
+					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
+					ball_v.y = -ball_v.y;
+					Tiles[column][n].destroyed = 1;
+					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
+					}
+			}
+		}
+		if(next_xPos > frameBounds[0]+2+4*17 && next_xPos <= frameBounds[0]+2+5*17){
+			int n,column=4;
+			for(n=0; n<10; n++){
+					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
+					ball_v.y = -ball_v.y;
+					Tiles[column][n].destroyed = 1;
+					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
+					}
+			}
+		}
+		if(next_xPos > frameBounds[0]+2+5*17 && next_xPos <= frameBounds[0]+2+6*17){
+			int n,column=5;
+			for(n=0; n<10; n++){
+					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
+					ball_v.y = -ball_v.y;
+					Tiles[column][n].destroyed = 1;
+					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
+					}
+			}
+		}
+		if(next_xPos > frameBounds[0]+2+6*17 && next_xPos <= frameBounds[0]+2+7*17){
+			int n,column=6;
+			for(n=0; n<10; n++){
+					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
+					ball_v.y = -ball_v.y;
+					Tiles[column][n].destroyed = 1;
+					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
+					}
+			}
+		}
+		if(next_xPos > frameBounds[0]+2+7*17 && next_xPos <= frameBounds[0] + 1 + 8*17){
+			int n,column=7;
+			for(n=0; n<10; n++){
+					if(next_yPos == frameBounds[1]+3+n*3  && !Tiles[column][n].destroyed){
+					ball_v.y = -ball_v.y;
+					Tiles[column][n].destroyed = 1;
+					drawTile(frameBounds[0]+2+column*17,frameBounds[1]+1+n*3, 17, 3, 79);
+					}
+			}	
+		}
 	
 		ball_p.x += ball_v.x;
 		ball_p.y += ball_v.y;	
@@ -139,6 +260,7 @@ void drawStriker(){
 }
 
 void initGame(){
+<<<<<<< HEAD
 	int n,i;
 	char blocklen = 17;
 	char blockheight = 3;
@@ -155,6 +277,10 @@ void initGame(){
 			}
 		}
 	}
+=======
+
+	drawTiles();
+>>>>>>> origin/master
 
 	// Init Striker
 	strikerLen = 9;
