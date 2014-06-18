@@ -140,6 +140,8 @@ void drawStriker(){
 
 void initGame(){
 	int n,i;
+	char blocklen = 17;
+	char blockheight = 3;
 
 	// Draw Tiles
 	for(n=0; n<10; n++){
@@ -149,7 +151,7 @@ void initGame(){
 			Tiles[i][n].color = defaultTileColor;
 			fgcolor(Tiles[i][n].color);
 			if(!Tiles[i][n].destroyed){
-				drawTile(frameBounds[0]+2+i*17,frameBounds[1]+1+n*3, 17, 3, (n+i+1)%2);
+				drawTile(frameBounds[0]+2+i*blocklen,frameBounds[1]+1+n*blockheight, blocklen, blockheight, (n+i+1)%2);
 			}
 		}
 	}
