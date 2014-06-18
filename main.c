@@ -21,6 +21,7 @@ char blockh = 3;
 unsigned char tileRows = 10;
 
 char gameState, gameState_last = -1, ballMoving=0;
+unsigned int strikerHitPos;
 
 struct TVector ball_p;
 struct TVector ball_v;
@@ -34,7 +35,8 @@ struct GameState {
 	unsigned char lives, points;
 };
 
-char lives = 5;
+unsigned char lives;
+unsigned int points;
 
 struct Tile Tiles[8][12];
 struct GameState Game;
@@ -86,9 +88,12 @@ void update_ball(){
 	int next_xPos = (ball_p.x + ball_v.x) >> FIX14_SHIFT;
 	int next_yPos = (ball_p.y + ball_v.y) >> FIX14_SHIFT;
 	long incidenceAngle = angle();
+	long xAngle = (128 << 14) - incidenceAngle;
 	int rotation=0, caseSelect;
 	int strikerCen = (strikerLen/2);
+	long nextAngle;
 	column = (next_xPos-frameBounds[0]-1) / blocklen;
+
 	if(column > 7) column = 7;
 
 	if(ball_v.x == 0 && ball_v.y == 0 ){
@@ -99,38 +104,46 @@ void update_ball(){
 			if( (next_xPos >= strikerPos) && (next_xPos <= strikerPos+strikerLen) ){
 				// Set caseSelect to reflect ball direction
 				if(ball_v.x >= 0){
-					caseSelect = next_xPos - strikerPos;
+					caseSelect = next_xPos-strikerPos;
 				}
 				else {
-					caseSelect = strikerPos+strikerLen - next_xPos;
+					caseSelect = strikerPos+strikerLen-next_xPos;
 				}
-	
-				// Rotation on different sections of the striker
+
+				// Where on striker ??
 				if(caseSelect == 0){
 					ball_v.x = -ball_v.x;
 					ball_v.y = -ball_v.y;
+					rotation = (xAngle/2) >> FIX14_SHIFT ;
 				}
-				else if(caseSelect > 0 && caseSelect < strikerCen){
+				else if(caseSelect == 1){
+					ball_v.x = -ball_v.x;
+					ball_v.y = -ball_v.y;	
+				}
+				else if(caseSelect == 2 || caseSelect == 3){
 					ball_v.x = -ball_v.x;
 					ball_v.y = -ball_v.y;
-					rotation = -(incidenceAngle/2 >> FIX14_SHIFT);
+					rotation = -(incidenceAngle/(4-caseSelect) >> FIX14_SHIFT);
+				}
+				else if(caseSelect == strikerCen){
+					ball_v.y = -ball_v.y;
 				}
 				else if(caseSelect > strikerCen && caseSelect <= strikerLen){
 					ball_v.y = -ball_v.y;
-					rotation = (incidenceAngle/2 >> FIX14_SHIFT);
-				}
-				else {
-					ball_v.y = -ball_v.y;
+					rotation = (xAngle/(1+strikerLen-caseSelect)) >> FIX14_SHIFT;
 				}
 				
+				nextAngle = ((incidenceAngle >> FIX14_SHIFT) + rotation) & 0x1FF;
+				if(nextAngle > 120 ){
+					rotation = (110 - (incidenceAngle >> FIX14_SHIFT)) ;
+				}
+				
+				// Compensate for ball direction !
 				if(ball_v.x < 0){
 	 		    	rotation = -rotation; 
 				}
 				rotate(&ball_v, rotation);
 			}
-		}
-		else if(next_yPos <= frameBounds[1]){
-			ball_v.y = -ball_v.y;
 		}
 		else if(next_yPos >= frameBounds[3]){
 			// You are dead !
@@ -145,7 +158,6 @@ void update_ball(){
 			ball_v.x = -ball_v.x;
 		}
 
-
 		// Faster, working, but but more spacious way to check
 		if(next_xPos >= frameBounds[0]+1+column*blocklen && next_xPos <= frameBounds[0]+1+(column+1)*blocklen){
 			int n;
@@ -155,8 +167,13 @@ void update_ball(){
 					else ball_v.y = -ball_v.y;
 					Tiles[column][n].destroyed = 1;
 					drawTile(frameBounds[0]+1+column*blocklen,frameBounds[1]+1+n*3, blocklen, blockh, 79);
+					points += 10;
 				}
 			}
+		}
+		
+		if(next_yPos <= frameBounds[1]){
+			ball_v.y = -ball_v.y;
 		}
 
 		ball_p.x += ball_v.x;
@@ -211,15 +228,17 @@ void printStatus(unsigned char x, unsigned char y){
 	printFix(expand(ball_v.x));
 	printf(", ");
 	printFix(expand(ball_v.y));
-	printf(") - AngleToNorm: ");
-	printFix(expand(angle()));
+	
+	
 	gotoxy(x,y+1);
 	printf("StrikerPos: %03d", strikerPos);
 	printf(" - GameState: %03d", gameState);
 	printf(" - Column: %03d", column);
 	*/
 	gotoxy(x,y);
-	printf("Lives: %d", lives);
+	printf("Lives: %d - Points: %05d", lives, points);
+	printf(") - AngleToNorm: ");
+	printFix(expand(angle()));
 }
 
 void printBallInfo(){
@@ -260,8 +279,8 @@ void moveStriker(char movex){
 void newGame(unsigned char level){
 	int n,i;
 	if(level == 1){
-		lives = 5;
-		tileRows = 6;
+		lives = 50;
+		tileRows = 8;
 	}
 
 	for(n=0; n<tileRows; n++){
@@ -271,7 +290,6 @@ void newGame(unsigned char level){
 			Tiles[i][n].color = defaultTileColor;
 		}
 	}
-
 }
 
 void updateGameState(){
