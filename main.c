@@ -35,12 +35,13 @@ struct GameState {
 	unsigned char lives, points;
 };
 
-unsigned char shots = 3;
+unsigned char shots;
+#define MAX_SHOTS 5
 
 struct Bullit {
 	unsigned char x, y, v;
 }; 
-struct Bullit bullits[3];
+struct Bullit bullits[MAX_SHOTS];
 
 unsigned char lives;
 unsigned int points;
@@ -200,21 +201,28 @@ void drawBall(){
 void drawBullits(){
 	// Bullits are NOT in FIX14
 	unsigned char i, n, column, row;
-	for(i=0; i<3; i++){
+	for(i=0; i<MAX_SHOTS; i++){
 		if(bullits[i].v != 0){
-			column = (bullits[i].x - frameBounds[0]-1) / blocklen;
-			row = (bullits[i].y - frameBounds[1] - 1) / blockh;
-			gotoxy(bullits[i].x, bullits[i].y );
-			printf(" ");
-			bullits[i].y = bullits[i].y - bullits[i].v;
-			gotoxy(bullits[i].x, bullits[i].y);
-			printf("%c",248);
-	
-			if(row < tileRows && !Tiles[column][row].destroyed){
+			if(bullits[i].y <= frameBounds[1]+1){
 				bullits[i].v = 0;
-				Tiles[column][row].destroyed = 1;
-				drawTile(frameBounds[0]+1+column*blocklen,frameBounds[1]+1+row*3, blocklen, blockh, 79); // Delete Tile
-				points += 10;
+				gotoxy(bullits[i].x, bullits[i].y );
+				printf(" ");
+			}
+			else {
+				column = (bullits[i].x - frameBounds[0]-1) / blocklen;
+				row = (bullits[i].y - frameBounds[1] - 1) / blockh;
+				gotoxy(bullits[i].x, bullits[i].y );
+				printf(" ");
+				bullits[i].y = bullits[i].y - bullits[i].v;
+				gotoxy(bullits[i].x, bullits[i].y);
+				printf("%c",248);
+		
+				if(row < tileRows && !Tiles[column][row].destroyed){
+					bullits[i].v = 0;
+					Tiles[column][row].destroyed = 1;
+					drawTile(frameBounds[0]+1+column*blocklen,frameBounds[1]+1+row*3, blocklen, blockh, 79); // Delete Tile
+					points += 10;
+				}
 			}
 		}
 	}
@@ -242,7 +250,7 @@ void initGame(){
 	setVec(&ball_v, 0, 0);
 
 	// Init Bullit
-	for(i=0;i<3;i++){
+	for(i=0;i<MAX_SHOTS;i++){
 		bullits[i].y = frameBounds[3]-2 -(i*2);
 		bullits[i].x = strikerPos+(strikerLen/2);
 		bullits[i].v = 0;
@@ -343,7 +351,7 @@ void updateGameState(){
 				frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
 				initGame();
 				LEDsetString("Play",0);
-				shots = 3;
+				shots = MAX_SHOTS;
 				break;
 			case 1: // GamePlay
 				setVec(&ball_v, 1, 0);
@@ -361,8 +369,7 @@ void updateGameState(){
 }
 
 void fireBullit(){
-	int i;
-	if(shots-- >= 0){
+	if(--shots >= 0){
 		bullits[shots].x = strikerPos + (strikerLen/2);
 		bullits[shots].v = 1;
 	}
