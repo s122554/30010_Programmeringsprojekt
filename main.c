@@ -12,7 +12,7 @@ volatile char LEDupdateFLAG;
 volatile char ball_updateFLAG;
 volatile char striker_updateFLAG;
 unsigned char column;
-char frameColor = 15;
+
 char strikerColor = 4;
 char defaultTileColor = 6;
 
@@ -34,6 +34,13 @@ struct Tile {
 struct GameState {
 	unsigned char lives, points;
 };
+
+unsigned char shots = 3;
+
+struct Bullit {
+	unsigned char x, y, v;
+}; 
+struct Bullit bullits[3];
 
 unsigned char lives;
 unsigned int points;
@@ -80,6 +87,7 @@ void drawTiles(){
 			}
 		}
 	}
+	fgcolor(15);
 }
 
 void update_ball(){
@@ -134,8 +142,8 @@ void update_ball(){
 				}
 				
 				nextAngle = ((incidenceAngle >> FIX14_SHIFT) + rotation) & 0x1FF;
-				if(nextAngle > 120 ){
-					rotation = (110 - (incidenceAngle >> FIX14_SHIFT)) ;
+				if(nextAngle > 122 ){
+					rotation = (115 - (incidenceAngle >> FIX14_SHIFT)) ;
 				}
 				
 				// Compensate for ball direction !
@@ -171,18 +179,17 @@ void update_ball(){
 				}
 			}
 		}
-		
+
 		if(next_yPos <= frameBounds[1]){
 			ball_v.y = -ball_v.y;
 		}
 
 		ball_p.x += ball_v.x;
-		ball_p.y += ball_v.y;	
+		ball_p.y += ball_v.y;
 	}
 }
 
 void drawBall(){
-	fgcolor(frameColor);
 	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
 	printf(" ");
 	update_ball();
@@ -190,31 +197,62 @@ void drawBall(){
 	printf("O");
 }
 
+void drawBullits(){
+	// Bullits are NOT in FIX14
+	unsigned char i, n, column, row;
+	for(i=0; i<3; i++){
+		if(bullits[i].v != 0){
+			column = (bullits[i].x - frameBounds[0]-1) / blocklen;
+			row = (bullits[i].y - frameBounds[1] - 1) / blockh;
+			gotoxy(bullits[i].x, bullits[i].y );
+			printf(" ");
+			bullits[i].y = bullits[i].y - bullits[i].v;
+			gotoxy(bullits[i].x, bullits[i].y);
+			printf("%c",248);
+	
+			if(row < tileRows && !Tiles[column][row].destroyed){
+				bullits[i].v = 0;
+				Tiles[column][row].destroyed = 1;
+				drawTile(frameBounds[0]+1+column*blocklen,frameBounds[1]+1+row*3, blocklen, blockh, 79); // Delete Tile
+				points += 10;
+			}
+		}
+	}
+}
+
 void drawStriker(){
 	char i;
-	fgcolor(frameColor);
 	for (i=0; i<strikerLen;i++){
 		printf("%c",223);
 	}
 }
 
 void initGame(){
+	unsigned char i;
 
 	drawTiles();
 
 	// Init Striker
 	strikerLen = 9;
-	fgcolor(frameColor);
+	fgcolor(15);
 	strikerPos = (frameBounds[2]-frameBounds[0])/2 - strikerLen/2;
 
 	// Init Ball
 	setVec(&ball_p, strikerPos+(strikerLen/2), frameBounds[3]-2);
 	setVec(&ball_v, 0, 0);
+
+	// Init Bullit
+	for(i=0;i<3;i++){
+		bullits[i].y = frameBounds[3]-2 -(i*2);
+		bullits[i].x = strikerPos+(strikerLen/2);
+		bullits[i].v = 0;
+	}
 	
 	// Draw Stuff
 	gotoxy(strikerPos,frameBounds[3]-1);
 	drawStriker();
 	drawBall();
+	drawBullits();
 }
 
 void printStatus(unsigned char x, unsigned char y){
@@ -239,6 +277,7 @@ void printStatus(unsigned char x, unsigned char y){
 	printf("Lives: %d - Points: %05d", lives, points);
 	printf(") - AngleToNorm: ");
 	printFix(expand(angle()));
+	// printf(" - %d", sizeof(bullits)/sizeof(struct Bullit));
 }
 
 void printBallInfo(){
@@ -252,7 +291,7 @@ void printBallInfo(){
 void moveStriker(char movex){
 	char i, y = frameBounds[3]-1;
 	striker_v = 0;
-
+	
 	if(movex < 0 && strikerPos > frameBounds[0]+1){
 		gotoxy(strikerPos, y);
 		printf("%c",223);
@@ -300,14 +339,15 @@ void updateGameState(){
 		switch(gameState){
 			case 0: // Reload LvL
 				clrscr();
-				fgcolor(frameColor);
+				fgcolor(15);
 				frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
 				initGame();
 				LEDsetString("Play",0);
+				shots = 3;
 				break;
 			case 1: // GamePlay
 				setVec(&ball_v, 1, 0);
-				rotate(&ball_v, -128 - striker_v * 51);
+				rotate(&ball_v, -128 - striker_v * 19);
 				LEDsetString("    ",0);
 				break;
 			case 2: // Game Over
@@ -320,9 +360,28 @@ void updateGameState(){
 	}
 }
 
+void fireBullit(){
+	int i;
+	if(shots-- >= 0){
+		bullits[shots].x = strikerPos + (strikerLen/2);
+		bullits[shots].v = 1;
+	}
+}
+
+void fireButtonAction(unsigned char val){
+		// Fire Button
+		if(gameState == 0 && val == 1){
+			gameState = 1;
+		}
+		else if(gameState == 1 && shots > 0 && val == 1){
+			fireBullit();	
+		}
+}
+
 void main(){
 	unsigned int ball_milis, striker_milis, print_milis;
 	int b_last, b, i, n;
+	unsigned char fire_button_last, fire_button;
 	long mul;
 	init();
 	clrscr();
@@ -334,21 +393,29 @@ void main(){
 	while(1){
 		b = getB();
 		updateGameState();
+
+		// Fire Button Actions
+		fire_button = (b & 0x01);
+		if(fire_button != fire_button_last){
+			fireButtonAction(fire_button);
+			fire_button_last = fire_button;
+		}
 		
+
+		
+		// Move striker buttons
 		if(striker_milis == 0){
-			if(b == 0x02){
+			if(b & 0x02){
 				moveStriker(-1);
 			}
-			else if(b == 0x04){
+			else if(b & 0x04){
 				moveStriker(1);
-			}
-			if(gameState == 0 && (b & 0x01) == 1){
-				gameState = 1;
 			}
 		}
 
 		if(gameState == 1 && ball_milis == 0 && (ball_v.x != 0 || ball_v.y != 0) ){
 			drawBall();
+			drawBullits();
 		}
 
 		// clock dividers!
