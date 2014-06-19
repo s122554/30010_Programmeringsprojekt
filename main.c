@@ -9,48 +9,31 @@
 // Global Vars
 volatile unsigned long milis;
 volatile char LEDupdateFLAG;
-volatile char ball_updateFLAG;
-volatile char striker_updateFLAG;
-unsigned char column;
 
-char strikerColor = 4;
-char defaultTileColor = 6;
+#define defaultTileColor 6
+#define MAX_SHOTS 10
+#define blocklen 17
+#define blockh 3
+const unsigned char frameBounds[4] = {2,2,139,60};
 
-char blocklen = 17;
-char blockh = 3;
-unsigned char tileRows = 10;
+unsigned char tileRows;
 
-char gameState, gameState_last = -1, ballMoving=0;
-unsigned int strikerHitPos;
+char gameState, gameState_last = -1;
 
 struct TVector ball_p;
 struct TVector ball_v;
-unsigned char strikerPos, strikerLen, striker_v;
+
+unsigned char strikerPos, strikerLen, striker_v, lives, points, shots;
 
 struct Tile {
 	unsigned char type, hits, destroyed, color;
 };
-
-struct GameState {
-	unsigned char lives, points;
-};
-
-#define MAX_SHOTS 5
-unsigned char shots;
-
+struct Tile Tiles[8][12];
 
 struct Bullit {
 	unsigned char x, y, v;
 }; 
 struct Bullit bullits[MAX_SHOTS];
-
-unsigned char lives;
-unsigned int points;
-
-struct Tile Tiles[8][12];
-struct GameState Game;
-
-int frameBounds[4] = {2,2,139,60};
 
 char getB(){
 	return	// 0 0 0 0 0 F7 F6 D3
@@ -120,7 +103,6 @@ void addShots(int s){
 
 void drawTiles(){
 	int n,i;
-
 	// Draw Tiles
 	for(n=0; n<tileRows; n++){
 		for(i=0; i<8; i++){
@@ -143,7 +125,7 @@ void drawBall(){
 	int rotation=0, caseSelect;
 	int strikerCen = (strikerLen/2);
 	long nextAngle;
-	column = (next_xPos-frameBounds[0]-1) / blocklen;
+	unsigned char column = (next_xPos-frameBounds[0]-1) / blocklen;
 
 	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
 	printf(" ");
@@ -274,13 +256,77 @@ void drawBullits(){
 	}
 }
 
-void drawStriker(){
-	char i;
-	for (i=0; i<strikerLen;i++){
-		printf("%c",223);
+rom char array[47][110] = {
+"                                                                 +@                                 ",
+"                                                              `#@@@                                 ",
+"                                                           .@@@@@#@`                                ",
+"                                                        :@@@@#;''@@                                 ",
+"                                                     '@@@@#;;;;;#@@@                                ",
+"                                                 .+@@@@+;;;;;;';;@'                                 ",
+"                              `+@+              @@@@';;';;;';;:,#@.                                 ",
+"                           .#@@@@              ,@;;;;;;;;;;;'@@@@;                                  ",
+"                        ,@@@@@'@@             .@@;';;;':.;:;@#.                                     ",
+"                     :@@@@#;';;@+    '@;     ,@@.;';,'@@,;;@@                                       ",
+"                  ,@@@@#;';''';@;`+@@@@      .@@:,#@#';@,;:@#                                       ",
+"                `@@@+;;'';';;;+@@@@@'@@    ;@@.+@+;;:;;@;;;@.                   .`                  ",
+"               '@@;'';';;;'::#@@#;;';@:`#@@@@#;+::;;;,;':;+@                ,@@@@@@,                ",
+"              '@#;'';'';,+@@@#;;;;;;#@@@@@':;:;@';;@@@@,;;@@            `+@@@@@';'@@.               ",
+"             .@+;'';::@@@@#;:';;:':,@@#@.:;;:,'#;:;;;@@::;@+         ;@@@@@+;;';;;;@@               ",
+"             @@;';;+@@@@#@::;;;;;@#':;;:,;;@@#@;::::,@@;;:@`     .#@#@@#;:';;;;;;;;'@`              ",
+"            .@,;';;@@@@@@@,;,::;:;;:;:;:,;;;:#@.:;:,#@':,#@   '@@@@@@';;;';;;;;;;;';@'              ",
+"            #@';;:+';;:;:@@@@;;;;;:;@+::,:;::@@,:##;:#,::@@@@@@@+;;#@.';';;;;;;':;;:@#              ",
+"            @#;;;;:;;:;;;;@@+;:.,::@#:;@;;,.'@@;;:;,:@.#@@@@@;;;;;:@@;:;;;;;;;;;';;;@@              ",
+"            @#;:;;;;:;:;:;@@.:;@':;;:;##:'@#::@::::.:@@@@+;;;;;;;,,@:;';;;;:,#,;;;;;@#              ",
+"            '@;;:;:::;;:;;@@,:;::;::;,@::,::,+:,,#@@@#';;';;;;;';:@@.;;;;;#@@@@;;:;:@'              ",
+"             @+,;;;:;::;:#@@::+.;;,,,:+.,;;:.@@@@@';:';:;;;;;:;;:;'@,,+;;:@@ @+;;;;'@`              ",
+"             `@@@@@@:;;::@@';;+.,:@`,::.,,#@@@+;;:@;';;;;;;;;';;:.#@@@#;:;@:,@.;;::@@               ",
+"               ;@@@,:;::+@@.:,@;::@#,.+@@@#;;;;:+@@';:;;;;'::,+@@@+;:#,:;'@#@#:;:;:@#               ",
+"            :@@@@;:;;,:,@@@::;':,;@@@@@':;;;;;:;;;';;;;;,,:;@@+;;:;;#@,;;@@@';;:;;#@                ",
+"        #@@@@@#:;,:::,:@@#@:,#@#@@@#:;;;;;;;;:';;@@;,,#@@:;;:;;:;;:;@@;;:@'::::::;@;                ",
+"       @@@@':::;,:::,,@@ @+@@@@@'';:;;;;;:;;:;;:,@@@@@+:@;::.;::;:;;@+:::;:;;:::;@@                 ",
+"      .@',:;::;,:,:,;@@@@@@@+;;:;;:;;::;:;;:,:#@@@+@@;;::::@;:;;::.#.;:;;:::::,@@#                  ",
+"      @@@`;,::,,::.@@@@@#;:::;:;::;:;:;:,:#@@@+@:;;@@,:;,::::::+@@@@;:::::::::@@,                  ;",
+"      #@@;,::,,,,+@@@':;:;:';:;:::;:,:@@@@+:::#@.:'@@::#:::+::@@':#@:;::::::::'@#                #@ ",
+"     @@;:,,,,,,#@#:::::;;:;::;::.;@@@@#@;::::;@@;:@@'::+;;+@::::::@@::::;@,::::#@@            `@@@  ",
+"   ,@@@:,,,,,@@@@;:::::::;;:;::@@@@#:;@::::;;:@'::@@.;:.::@@:::::#@,.:::@@.:::::#@@,       .;@@@@   ",
+"    @@,,,.#@@@.@@::::;;,,;;:::'@@+:.::#:::.,'@@.::::::;:::@;:::::@@@,:::@@@::::::;@@@@@@@@@@@@@@    ",
+"   #@`;@@@@; '@@':;,.'@@@@.:::::;:@::;.::@@@':@::::;::@::'@.::,.,#@@:::;@.@.::::::::+##++';:,#@`    ",
+"  '@@@@@:   .@#,.'@@@@@@@'::;;:;::@::@;:#:::::#::::::::::@@::@@@@+@':::+@ @+::::::,::,::,,:,@@,     ",
+" ,@@:       @@@@@@#, @@,::::::::::;::;::::::::.:::::::.:,@#::,,::,@.,,:@@ ,@`,::,,,:::,:,,,'@@      ",
+"           @@@#,     @@`::;:::::,..::.:'.:::,@,:;@@::+:::@,,:::::;@,:::@@  @@,:,:,,,,,,,:,,@@@@     ",
+"          ,.        `@@:,;:::;@@@@::#::@@@:,@#::#@',:+,:#@,,:::,:@@:,:,@'   @@.,,,,,,,,,,,.@@       ",
+"                    ,@..+::,,@@;@#::@::,:,::@,:,@@.::.:,@@:,..,;#@',:::@.    @@`,,,,,,,,,,@@        ",
+"                    +@@@@:,:;@  @,,,@,::,:,,@,:,@@:,,,,,@@@@@@@@@@`+@#'@      #@#.,,,,,.`'@         ",
+"                    @; @,:::@@ .@,:'@:,:::,+@.:#@@@@@..#@+;.    :@@@@@@@       .@@#`,,,.@@@;        ",
+"                      `@.:,:@@ #@:.@@';#@@@@@@@@@+:@:@@@@           @            ,@@@@@@@.          ",
+"                      +@,.@`@, @@@@@#@@@@',`       @@@@                             ;;.             ",
+"                      @@@@@@@  @#;#               '@:                                               ",
+"                      +':#@;@                                                                       ",
+"                          `                                                                         ",
+"                                  PRESS ANY KEY TO CONTINUE                                         ",
+};
+
+void printStartScreen(){
+	int i,j, startPos, b;
+    int asciilen = 110, asciiheight = 47;
+	
+         
+    startPos =(frameBounds[2] - asciilen)/2 + 2;
+	for(j=0; j<asciiheight; j++){
+ 		gotoxy(startPos,j+1);
+ 		for(i=0;i<asciilen;i++){
+        	printf("%c",array[j][i]);
+    	}
+	}
+	
+	while(!(b & 0x01) || !(b & 0x02) || !(b & 0x04)){
+		b = getB();
+		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
+			clrscr();
+			break;
+		}
 	}
 }
-
 
 void initGame(){
 	unsigned char i;
@@ -307,49 +353,13 @@ void initGame(){
 	
 	// Draw Stuff
 	gotoxy(strikerPos,frameBounds[3]-1);
-	drawStriker();
+	drawStriker(strikerLen);
 	drawBall();
 	drawBullits();
-	addShots(5);
+	addShots(MAX_SHOTS);
 	addLives(5);
 	addPoints(0);
 	drawTiles();
-}
-
-void printStatus(unsigned char x, unsigned char y){
-	/*
-	gotoxy(x,y);
-	printf("BallPos: (");
-	printFix(expand(ball_p.x));
-	printf(", ");
-	printFix(expand(ball_p.y));
-	printf(") - BallVelo: (");
-	printFix(expand(ball_v.x));
-	printf(", ");
-	printFix(expand(ball_v.y));
-	
-	
-	gotoxy(x,y+1);
-	printf("StrikerPos: %03d", strikerPos);
-	printf(" - GameState: %03d", gameState);
-	printf(" - Column: %03d", column);
-	*/
-	gotoxy(x,y);
-	printf("Lives: %d - Points: %05d", lives, points);
-	printf(") - AngleToNorm: ");
-	printFix(expand(angle()));
-	// printf(" - %d", sizeof(bullits)/sizeof(struct Bullit));
-}
-
-
-
-
-void printBallInfo(){
-	printf("BallPos: (");
-	printFix(expand(ball_p.x));
-	printf(", ");
-	printFix(expand(ball_p.y));
-	printf(")");
 }
 
 void moveStriker(char movex){
@@ -385,7 +395,12 @@ void newGame(unsigned char level){
 	if(level == 1){
 		tileRows = 8;
 	}
-
+	else if(level == 2){
+		tileRows =10;
+	}
+	else if(level == 3){
+		tileRows =12;
+	  }
 	for(n=0; n<tileRows; n++){
 		for(i=0; i<8; i++){
 			Tiles[i][n].destroyed = 0;
@@ -393,12 +408,6 @@ void newGame(unsigned char level){
 			Tiles[i][n].color = defaultTileColor;
 		}
 	}
-}
-
-void newBall(){
-	
-	setVec(&ball_v, 0, 0);
-
 }
 
 void updateGameState(){
@@ -432,21 +441,17 @@ void fireBullit(){
 		addShots(-1);
 		bullits[shots].x = strikerPos + (strikerLen/2);
 		bullits[shots].v = 1;
-	
-		
-	//	gotoxy(frameBounds[2]-shots-1,frameBounds[1]-1);
-	//	printf(" ");
 	}
 }
 
 void fireButtonAction(unsigned char val){
-		// Fire Button
-		if(gameState == 0 && val == 1){
-			gameState = 1;
-		}
-		else if(gameState == 1 && shots > 0 && val == 1){
-			fireBullit();	
-		}
+	// Fire Button
+	if(gameState == 0 && val == 1){
+		gameState = 1;
+	}
+	else if(gameState == 1 && shots > 0 && val == 1){
+		fireBullit();	
+	}
 }
 
 void main(){
@@ -456,7 +461,8 @@ void main(){
 	long mul;
 	init();
 	clrscr();
-	newGame(1);
+	printStartScreen();
+	newGame(3);
 	initGame();
 	updateGameState();
 	LEDsetString("HEJS", 0);
@@ -471,8 +477,6 @@ void main(){
 			fireButtonAction(fire_button);
 			fire_button_last = fire_button;
 		}
-		
-
 		
 		// Move striker buttons
 		if(striker_milis == 0){
@@ -492,67 +496,11 @@ void main(){
 		// clock dividers!
 		if(++ball_milis == 100){ ball_milis = 0; }
 		if(++striker_milis == 61){ striker_milis = 0; }
-	//	if(++print_milis == 203) 
-	//		print_milis = 0;
-		//	printStatus(2,frameBounds[3]+2);
-		
+
 		LEDupdate();
 		
 	}
-
 	do {} while (1 != 2); // stay here always
 }
 
 
-
-	// LEDsetString("    Hvordan sker det nu ????", 0);
-
-/*
-	window(20,5,80,10,"Hejsa",0);
-	window(20,20,50,25,"Yiir mayn",1);
-
-	printf("Sin %ld: ",43);
-	printFix(expand(sin(43)));
-	printf("\n");
-	printf("Cos %ld: ",43);
-	printFix(expand(cos(43)));
-	printf("\n");
-	
-	setVec(&v, -4, -4);
-	rotate(&v,1280);
-	printf("Vec: [");
-	printFix(expand(v.x));
-	printf(",");
-	printFix(expand(v.y));
-	printf("]\n");
-
-	while(1){
-		LEDupdate();
-		long count=0, last_count=0;
-		int b_last, b;
-
-		b = getB();
-		if(b != b_last){
-			if(b == 0x01){ 
-				count = 0;
-			}
-			else if(b == 0x02){
-				count--;
-			}
-			else if(b == 0x04){
-				count++;
-			}
-		}
-		b_last = b;
-		if(count != last_count){
-			printf("%d\n",count);
-			printTime();
-			PEOUT &= ~(1 << 7);
-			// PGOUT = count & 0x7F;
-			PGOUT = 1 << ((count & 0x7F)%7);
-			PEOUT |= (1 << 7);
-			last_count = count;
-		}
-	}
-
-*/
