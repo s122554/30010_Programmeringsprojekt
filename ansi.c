@@ -177,3 +177,11 @@ void frame(int x1, int y1, int x2, int y2, int style){
 	printf("%c", frameChars[style][7]);
 	*/
 }
+
+void drawStriker(int len){
+	int i;
+	for(i=0; i<len; i++){
+		printf("%c", 220);
+	}
+}
+

@@ -17,7 +17,7 @@ void reverse(char on); // Reverse - Invert fgbg colors
 void window(int x1, int y1, int x2, int y2, char *str, int style); // Draw window
 void frame(int x1, int y1, int x2, int y2, int style);
 void drawTile(unsigned char x, unsigned char y, unsigned char w, unsigned char h, char myChar);
-
+void drawStriker(int len);
 
 void fgcolor(int foreground);
 void bgcolor(int background);
