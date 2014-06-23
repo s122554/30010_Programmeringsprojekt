@@ -18,10 +18,6 @@
 <file filter-key="">.\helper.h</file>
 <file filter-key="">.\time.c</file>
 <file filter-key="">.\time.h</file>
-<file filter-key="">.\asciiart.h</file>
-<file filter-key="">.\asciiart.c</file>
-<file filter-key="">.\menu.c</file>
-<file filter-key="">.\menu.h</file>
 </files>
 
 <!-- configuration information -->

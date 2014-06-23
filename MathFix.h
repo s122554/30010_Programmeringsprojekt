@@ -28,6 +28,4 @@ long vecMagSquared(struct TVector *v1);
 long vecMag(struct TVector *v1);
 long vecAngle(struct TVector *v1, struct TVector *v2);
 
-unsigned long rand(unsigned long min, unsigned long max);
-
 #endif // _MATHFIX_H_

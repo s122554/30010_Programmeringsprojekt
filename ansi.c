@@ -153,6 +153,7 @@ void resetbgcolor() {
 // gray on black text, no underline, no blink, no reverse
   printf("%c[m", ESC);  
 }
+
 void frame(int x1, int y1, int x2, int y2, int style){
 	int i, width = x2-x1, height = y2-y1;
 	//	{ulc,-| ,|- ,urc, | ,llc, - ,lrc}
@@ -178,10 +179,10 @@ void frame(int x1, int y1, int x2, int y2, int style){
 	*/
 }
 
-void drawStriker(int len){
-	int i;
-	for(i=0; i<len; i++){
-		printf("%c", 220);
+void drawStriker(unsigned char len){
+	char i;
+	for (i=0; i<len;i++){
+		printf("%c",223);
 	}
 }
 
