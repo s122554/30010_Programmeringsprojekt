@@ -380,7 +380,7 @@ void newGame(unsigned char level){
 		case 3: // Chuck Mode
 			tileRows = rand(12,15);
 			break;
-		default: // Bogus Mode
+		default: // Bogus Mode - OH YEAH!
 			tileRows = 1;
 			break;
 	}
