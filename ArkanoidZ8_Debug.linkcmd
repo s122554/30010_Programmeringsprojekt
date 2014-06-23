@@ -60,7 +60,7 @@ define _zsl_g_clock_xdefine = 18432000
 /* Set frequency to 18432000 Hz */
 define __user_frequency = 18432000
 
-"C:\Users\s122554\Desktop\ArkanoidZ8\ArkanoidZ8"= \
+"M:\Documents\GitHub\30010_Programmeringsprojekt\ArkanoidZ8"= \
  C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\zilog\startupL.obj, \
  .\zsldevinit.obj, \
  .\ansi.obj, \
