@@ -278,23 +278,7 @@ void drawBullits(){
 
 
 
-void gameOver(){
-	int b;	
-	clrscr();
-	printGameOver();
-	while(!(b & 0x01) || !(b & 0x02) || !(b & 0x04)){
-		b = getB();
-		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
-			clrscr();
-			break;
-		}
-	}
-	clrscr();
-	gotoxy((frameBounds[2]-frameBounds[0])/2,(frameBounds[3]+frameBounds[1])/2);
-	printf("Want to try again?");
-	gotoxy((frameBounds[2]-frameBounds[0])/2,(frameBounds[3]+frameBounds[1]+2)/2);
-	printf("    YES     NO");
-}
+
 
 
 void winScreen(){
@@ -380,7 +364,7 @@ void newGame(unsigned char level){
 		case 3: // Chuck Mode
 			tileRows = rand(12,15);
 			break;
-		default: // Bogus Mode - OH YEAH!
+		default: // Bogus Mode
 			tileRows = 1;
 			break;
 	}
@@ -425,14 +409,33 @@ void startScreen(){
 	int b;
 	clrscr();
 	printStartscreen();
-  	while(!(b & 0x01) || !(b & 0x02) || !(b & 0x04)){
+	while(!(b & 0x01) || !(b & 0x02) || !(b & 0x04)){
 		b = getB();
 		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
-			clrscr();
 			break;
 		}
 	}
+	//gameState = 5;
 	menuScreen();
+}
+
+void gameOver(){
+	int b;	
+	clrscr();
+	printGameOver();
+	while(!(b & 0x01) || !(b & 0x02) || !(b & 0x04)){
+		b = getB();
+		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
+			break;
+		}
+	}
+	points = 0;
+	startScreen();
+//	clrscr();
+//	gotoxy((frameBounds[2]-frameBounds[0])/2,(frameBounds[3]+frameBounds[1])/2);
+//	printf("Want to try again?");
+//	gotoxy((frameBounds[2]-frameBounds[0])/2,(frameBounds[3]+frameBounds[1]+2)/2);
+//	printf("    YES     NO");
 }
 
 void updateGameState(){
@@ -452,16 +455,18 @@ void updateGameState(){
 			case 2: // Game Over
 				LEDsetString("    Game Over", 0);
 				gameOver();
+				//gameState = 5;
 				break;
 			case 3: //Winner
 				LEDsetString("    WINNER",0);
 				printStartscreen();
 				break;
 			case 4: // Startscreen
-				LEDsetString("    Wellcome to TILE FIGHTERl",0);
+				LEDsetString("    Welcome to TILE FIGHTER!",0);
 				startScreen();
 				break;
-			case 5: // Startscreen
+			case 5: // Menuscreen
+				menuScreen();
 				break;
 			default:
 				break;
@@ -490,40 +495,38 @@ void fireButtonAction(unsigned char val){
 	}
 }
 
-void main(){
+void game(){
 	unsigned int ball_milis, striker_milis, print_milis;
 	int b_last, b, i, n;
 	unsigned char fire_button_last, fire_button, selected_level;
-	long mul;
-	init();
-	startScreen();
-
-	updateGameState();
+	//long mul;
 
 	while(1){
 		b = getB();
 		updateGameState();
-
-		// Fire Button Actions
-		fire_button = (b & 0x01);
-		if(fire_button != fire_button_last){
-			fireButtonAction(fire_button);
-			fire_button_last = fire_button;
-		}
 		
-		// Move striker buttons
-		if(striker_milis == 0){
-			if(b & 0x02){
-				moveStriker(-1);
+		if (gameState == 0 || gameState == 1){
+			// Fire Button Actions
+			fire_button = (b & 0x01);
+			if(fire_button != fire_button_last){
+				fireButtonAction(fire_button);
+				fire_button_last = fire_button;
 			}
-			else if(b & 0x04){
-				moveStriker(1);
+			
+			// Move striker buttons
+			if(striker_milis == 0){
+				if(b & 0x02){
+					moveStriker(-1);
+				}
+				else if(b & 0x04){
+					moveStriker(1);
+				}
 			}
-		}
-
-		if(gameState == 1 && ball_milis == 0 && (ball_v.x != 0 || ball_v.y != 0) ){
-			drawBall();
-			drawBullits();
+	
+			if(gameState == 1 && ball_milis == 0 && (ball_v.x != 0 || ball_v.y != 0) ){
+				drawBall();
+				drawBullits();
+			}
 		}
 
 		// clock dividers!
@@ -533,6 +536,14 @@ void main(){
 		LEDupdate();
 				
 	}
+}
+
+void main(){
+	
+	init();
+	startScreen();
+	updateGameState();
+	game();
 	
 
 	do {} while (1 != 2); // stay here always
