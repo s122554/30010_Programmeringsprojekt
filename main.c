@@ -33,7 +33,7 @@ unsigned char strikerPos, strikerLen, striker_v, lives, points, shots;
 struct Tile {
 	unsigned char type, hits, destroyed, color;
 };
-struct Tile Tiles[8][12];
+struct Tile Tiles[8][15];
 
 struct Bullit {
 	unsigned char x, y, v;
@@ -274,50 +274,9 @@ void drawBullits(){
 
 
 
-void startScreen(){
-	int b;	
-	printStartscreen();
-  	while(!(b & 0x01) || !(b & 0x02) || !(b & 0x04)){
-		b = getB();
-		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
-			clrscr();
-			break;
-		}
-	}
-}
-void menuScreen(){
-	int b, last_b;
-	
-/*	menu_print();
-	while(!(b & 0x01) || !(b & 0x02) || !(b & 0x04)){
-		b = getB();
-		if(b & 0x01){
-			menu_select();
-		}
-		else if(b & 0x02){
-			menu_prev();	 
-		}
-		else if(b & 0x04){
-			menu_next();
-		}
-}
-*/
-	
-	menu_print();
-  	while(!menu_isSelected()){
-		b = getB_wait();
 
-		if(b & 0x02){
-			menu_prev();
-		}
-		else if(b & 0x04){
-			menu_next();
-		}
-		else if(b & 0x01){
-			menu_select();
-		}
 
-}
+
 
 void gameOver(){
 	int b;	
@@ -379,7 +338,6 @@ void initGame(){
 	drawTiles();
 }
 
-
 void moveStriker(char movex){
 	char i, y = frameBounds[3]-1;
 	striker_v = 0;
@@ -409,15 +367,22 @@ void moveStriker(char movex){
 
 void newGame(unsigned char level){
 	int n,i;
-	gameState = 0;
-	if(level == 1){
-		tileRows = 1;
-	}
-	else if(level == 2){
-		tileRows =10;
-	}
-	else if(level == 3){
-		tileRows =12;
+	switch(level){
+		case 0: // Easy Mode
+			tileRows = rand(6,8);
+			break;
+		case 1: // Normal Mode
+			tileRows = rand(8,10);
+			break;
+		case 2: // Hard Mode
+			tileRows = rand(10,12);
+			break;
+		case 3: // Chuck Mode
+			tileRows = rand(12,15);
+			break;
+		default: // Bogus Mode
+			tileRows = 1;
+			break;
 	}
 	for(n=0; n<tileRows; n++){
 		for(i=0; i<tileColumns; i++){
@@ -427,6 +392,47 @@ void newGame(unsigned char level){
 		}
 	}
 	tiles_left = tileColumns*tileRows;
+
+	gameState = 0;
+}
+
+void menuScreen(){
+	unsigned char b, b_last, item;
+	clrscr();
+	menu_print();
+  	while(!menu_isSelected()){
+		b = getB();
+		if( b != b_last ){
+			if(b & 0x02){
+				menu_prev(); 
+			}
+			else if(b & 0x04){	
+				menu_next();
+			}
+			else if(b & 0x01){
+				randSeed(milis);
+				item = menu_select();	
+			}
+			b_last = b;
+		}
+	}
+
+	newGame(item);
+	initGame();
+}
+
+void startScreen(){
+	int b;
+	clrscr();
+	printStartscreen();
+  	while(!(b & 0x01) || !(b & 0x02) || !(b & 0x04)){
+		b = getB();
+		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
+			clrscr();
+			break;
+		}
+	}
+	menuScreen();
 }
 
 void updateGameState(){
@@ -448,12 +454,15 @@ void updateGameState(){
 				gameOver();
 				break;
 			case 3: //Winner
-				LEDsetString("WINNER",0);
+				LEDsetString("    WINNER",0);
 				printStartscreen();
 				break;
-			case 4: //menu
-				// menu();
-				break;		
+			case 4: // Startscreen
+				LEDsetString("    Wellcome to TILE FIGHTERl",0);
+				startScreen();
+				break;
+			case 5: // Startscreen
+				break;
 			default:
 				break;
 			}
@@ -484,19 +493,12 @@ void fireButtonAction(unsigned char val){
 void main(){
 	unsigned int ball_milis, striker_milis, print_milis;
 	int b_last, b, i, n;
-	unsigned char fire_button_last, fire_button;
+	unsigned char fire_button_last, fire_button, selected_level;
 	long mul;
 	init();
-	clrscr();
-	menuScreen();
-
-	/*
 	startScreen();
-	// menu();
-	newGame(1);
-	initGame();
+
 	updateGameState();
-	LEDsetString("HEJS", 0);
 
 	while(1){
 		b = getB();
@@ -531,7 +533,7 @@ void main(){
 		LEDupdate();
 				
 	}
-	*/
+	
 
 	do {} while (1 != 2); // stay here always
 }

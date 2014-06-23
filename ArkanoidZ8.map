@@ -4,13 +4,13 @@ Copyright (C) 1999-2004 ZiLOG, Inc. All Rights Reserved
 
 LINK MAP:
 
-DATE:      Wed Jun 18 16:10:26 2014
+DATE:      Mon Jun 23 10:09:52 2014
 PROCESSOR: assembler
 FILES:     C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\zilog\startupL.obj
            .\zsldevinit.obj
            .\ansi.obj             .\main.obj             .\MathFix.obj          
            .\sinLUT.obj           .\led.obj              .\helper.obj           
-           .\time.obj             
+           .\time.obj             .\asciiart.obj         .\menu.obj             
            C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\std\crtrevaaLDD.lib
            C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\std\fpdumyL.obj
            C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\zilog\zslLYD.lib
@@ -81,7 +81,7 @@ define _zsl_g_clock_xdefine = 18432000
 /* Set frequency to 18432000 Hz */
 define __user_frequency = 18432000
 
-"M:\Documents\GitHub\30010_Programmeringsprojekt\ArkanoidZ8"=  C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\zilog\startupL.obj,  .\zsldevinit.obj,  .\ansi.obj,  .\main.obj,  .\MathFix.obj,  .\sinLUT.obj,  .\led.obj,  .\helper.obj,  .\time.obj,  C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\std\crtrevaaLDD.lib,  C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\std\fpdumyL.obj,  C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\zilog\zslLYD.lib
+"C:\Users\s122554\Desktop\ArkanoidZ8\ArkanoidZ8"=  C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\zilog\startupL.obj,  .\zsldevinit.obj,  .\ansi.obj,  .\main.obj,  .\MathFix.obj,  .\sinLUT.obj,  .\led.obj,  .\helper.obj,  .\time.obj,  .\asciiart.obj,  .\menu.obj,  C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\std\crtrevaaLDD.lib,  C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\std\fpdumyL.obj,  C:\PROGRA~2\ZiLOG\ZDSII_~1.3\lib\zilog\zslLYD.lib
 
 
 SEGMENT OVERLAYS:
@@ -96,9 +96,9 @@ SPACE ALLOCATION:
 
 Space              Base        Top         Size
 ------------------ ----------- ----------- ---------
-EDATA                   E:0100      E:0A10      911h
+EDATA                   E:0100      E:0ABF      9c0h
 RDATA                     R:E0        R:EF       10h
-ROM                     C:0000      C:4397     4398h
+ROM                     C:0000      C:7B20     7b21h
 
 
 SEGMENTS WITHIN SPACE:
@@ -106,8 +106,8 @@ SEGMENTS WITHIN SPACE:
 
 EDATA              Type                Base        Top         Size
 ------------------ ------------------- ----------- ----------- ---------
-FAR_BSS            normal data              E:0100      E:02E1      1e2h
-FAR_DATA           normal data              E:02E2      E:0A10      72fh
+FAR_BSS            normal data              E:0100      E:035E      25fh
+FAR_DATA           normal data              E:035F      E:0ABF      761h
 
 
 RDATA              Type                Base        Top         Size
@@ -118,33 +118,36 @@ workingreg         absolute data              R:E0        R:EF       10h
 ROM                Type                Base        Top         Size
 ------------------ ------------------- ----------- ----------- ---------
 __VECTORS          absolute data            C:0000      C:0037       38h
-_sputch_TEXT       normal data              C:3578      C:35A6       2fh
-_uputch_TEXT       normal data              C:3549      C:3561       19h
-abs_TEXT           normal data              C:37B6      C:37F3       3eh
-ansi_TEXT          normal data              C:0391      C:0D7A      9eah
-CODE               normal data              C:0038      C:02C6      28fh
-FAR_DATA           * segment copy *         C:3C69      C:4397      72fh
-getfreq_TEXT       normal data              C:308C      C:30A2       17h
-helper_TEXT        normal data              C:2BA4      C:2BDF       3ch
-led_TEXT           normal data              C:2910      C:2BA3      294h
-main_TEXT          normal data              C:0D7B      C:201A     12a0h
-mathfix_TEXT       normal data              C:201B      C:290F      8f5h
-mstring_TEXT       normal data              C:3769      C:37B5       4dh
-nt_send_TEXT       normal data              C:2EB8      C:308B      1d4h
-putch_TEXT         normal data              C:3B52      C:3BAE       5dh
-reverse_TEXT       normal data              C:37F4      C:38C8       d5h
-ROM_TEXT           normal data              C:02C7      C:031F       59h
-sio_TEXT           normal data              C:2DD6      C:2EB7       e2h
-startup            normal data              C:0320      C:0390       71h
-strlen_TEXT        normal data              C:34BC      C:34FD       42h
-t_putch_TEXT       normal data              C:3562      C:3577       16h
-teuart0_TEXT       normal data              C:3BAF      C:3C68       bah
-time_TEXT          normal data              C:2BE0      C:2DD5      1f6h
-tstring_TEXT       normal data              C:35A7      C:3768      1c2h
-ultoa_TEXT         normal data              C:30A3      C:34BB      419h
-ustoa_TEXT         normal data              C:3522      C:3548       27h
-uultoa_TEXT        normal data              C:38C9      C:3B51      289h
-uustoa_TEXT        normal data              C:34FE      C:3521       24h
+_sputch_TEXT       normal data              C:6CCF      C:6CFD       2fh
+_uputch_TEXT       normal data              C:6CA0      C:6CB8       19h
+abs_TEXT           normal data              C:6F0D      C:6F4A       3eh
+ansi_TEXT          normal data              C:2D09      C:3737      a2fh
+CODE               normal data              C:2978      C:2C25      2aeh
+FAR_DATA           * segment copy *         C:73C0      C:7B20      761h
+getfreq_TEXT       normal data              C:67E3      C:67F9       17h
+helper_TEXT        normal data              C:5E71      C:5EAC       3ch
+led_TEXT           normal data              C:5BDD      C:5E70      294h
+main_TEXT          normal data              C:3738      C:5165     1a2eh
+mathfix_TEXT       normal data              C:5166      C:5BDC      a77h
+menu_TEXT          normal data              C:61E9      C:652C      344h
+mstring_TEXT       normal data              C:6EC0      C:6F0C       4dh
+nt_send_TEXT       normal data              C:660F      C:67E2      1d4h
+putch_TEXT         normal data              C:72A9      C:7305       5dh
+reverse_TEXT       normal data              C:6F4B      C:701F       d5h
+ROM_DATA           normal data              C:0038      C:2977     2940h
+ROM_TEXT           normal data              C:2C26      C:2C97       72h
+sciiart_TEXT       normal data              C:60A3      C:61E8      146h
+sio_TEXT           normal data              C:652D      C:660E       e2h
+startup            normal data              C:2C98      C:2D08       71h
+strlen_TEXT        normal data              C:6C13      C:6C54       42h
+t_putch_TEXT       normal data              C:6CB9      C:6CCE       16h
+teuart0_TEXT       normal data              C:7306      C:73BF       bah
+time_TEXT          normal data              C:5EAD      C:60A2      1f6h
+tstring_TEXT       normal data              C:6CFE      C:6EBF      1c2h
+ultoa_TEXT         normal data              C:67FA      C:6C12      419h
+ustoa_TEXT         normal data              C:6C79      C:6C9F       27h
+uultoa_TEXT        normal data              C:7020      C:72A8      289h
+uustoa_TEXT        normal data              C:6C55      C:6C78       24h
 
 SEGMENTS WITHIN MODULES:
 ========================
@@ -155,8 +158,8 @@ Module: ..\..\src\boot\common\startupl.asm (File: startupL.obj) Version: 1:0 02/
     --------------------------------------- ----------- ----------- ---------
     Segment: __VECTORS                           C:0000      C:0037       38h
     Segment: FAR_BSS                             E:0100      E:0101        2h
-    Segment: FAR_DATA                            E:02E2      E:02E2        1h
-    Segment: startup                             C:0320      C:0390       71h
+    Segment: FAR_DATA                            E:035F      E:035F        1h
+    Segment: startup                             C:2C98      C:2D08       71h
     Segment: workingreg                            R:E0        R:EF       10h
 
 
@@ -164,520 +167,565 @@ Module: ..\UART\COMMON\PUTCH.C (Library: zslLYD.lib) Version: 1:0 02/23/2005 13:
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: putch_TEXT                          C:3B52      C:3BAE       5dh
+    Segment: putch_TEXT                          C:72A9      C:7305       5dh
 
 
 Module: ..\UART\COMMON\WRITEUART0.C (Library: zslLYD.lib) Version: 1:0 02/23/2005 13:32:38
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: FAR_DATA                            E:09F3      E:09F3        1h
-    Segment: teuart0_TEXT                        C:3BAF      C:3C68       bah
+    Segment: FAR_DATA                            E:0A71      E:0A71        1h
+    Segment: teuart0_TEXT                        C:7306      C:73BF       bah
 
 
-Module: .\ANSI.C (File: ansi.obj) Version: 1:0 06/18/2014 14:12:34
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: ansi_TEXT                           C:0391      C:0D7A      9eah
-    Segment: FAR_DATA                            E:02E8      E:02F7       10h
-    Segment: ROM_TEXT                            C:02C7      C:02EB       25h
-
-
-Module: .\HELPER.C (File: helper.obj) Version: 1:0 06/16/2014 09:08:29
+Module: .\ANSI.C (File: ansi.obj) Version: 1:0 06/23/2014 09:12:10
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: helper_TEXT                         C:2BA4      C:2BDF       3ch
+    Segment: ansi_TEXT                           C:2D09      C:3737      a2fh
+    Segment: FAR_DATA                            E:0365      E:0374       10h
+    Segment: ROM_TEXT                            C:2C26      C:2C4A       25h
 
 
-Module: .\LED.C (File: led.obj) Version: 1:0 06/16/2014 09:08:29
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: FAR_BSS                             E:02A3      E:02C2       20h
-    Segment: FAR_DATA                            E:080A      E:09EF      1e6h
-    Segment: led_TEXT                            C:2910      C:2BA3      294h
-
-
-Module: .\MAIN.C (File: main.obj) Version: 1:0 06/18/2014 16:10:25
+Module: .\ASCIIART.C (File: asciiart.obj) Version: 1:0 06/23/2014 09:12:11
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: FAR_BSS                             E:0102      E:02A2      1a1h
-    Segment: FAR_DATA                            E:02F8      E:0307       10h
-    Segment: FAR_DATA                            E:09F4      E:0A10       1dh
-    Segment: main_TEXT                           C:0D7B      C:201A     12a0h
-    Segment: ROM_TEXT                            C:02EC      C:031F       34h
+    Segment: ROM_DATA                            C:0038      C:2977     2940h
+    Segment: sciiart_TEXT                        C:60A3      C:61E8      146h
 
 
-Module: .\MATHFIX.C (File: MathFix.obj) Version: 1:0 06/17/2014 09:17:35
+Module: .\HELPER.C (File: helper.obj) Version: 1:0 06/23/2014 09:12:11
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: mathfix_TEXT                        C:201B      C:290F      8f5h
+    Segment: helper_TEXT                         C:5E71      C:5EAC       3ch
 
 
-Module: .\SINLUT.C (File: sinLUT.obj) Version: 1:0 06/17/2014 09:07:48
+Module: .\LED.C (File: led.obj) Version: 1:0 06/23/2014 09:12:11
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: FAR_DATA                            E:0308      E:0809      502h
+    Segment: FAR_BSS                             E:031E      E:033D       20h
+    Segment: FAR_DATA                            E:0888      E:0A6D      1e6h
+    Segment: led_TEXT                            C:5BDD      C:5E70      294h
 
 
-Module: .\TIME.C (File: time.obj) Version: 1:0 06/17/2014 13:48:56
+Module: .\MAIN.C (File: main.obj) Version: 1:0 06/23/2014 10:09:52
+
+    Name                                        Base        Top      Size
+    --------------------------------------- ----------- ----------- ---------
+    Segment: FAR_BSS                             E:0102      E:031D      21ch
+    Segment: FAR_DATA                            E:0375      E:0379        5h
+    Segment: FAR_DATA                            E:0A72      E:0AB2       41h
+    Segment: main_TEXT                           C:3738      C:5165     1a2eh
+    Segment: ROM_TEXT                            C:2C4B      C:2C6C       22h
+
+
+Module: .\MATHFIX.C (File: MathFix.obj) Version: 1:0 06/23/2014 09:43:40
+
+    Name                                        Base        Top      Size
+    --------------------------------------- ----------- ----------- ---------
+    Segment: FAR_DATA                            E:037A      E:0385        ch
+    Segment: mathfix_TEXT                        C:5166      C:5BDC      a77h
+
+
+Module: .\MENU.C (File: menu.obj) Version: 1:0 06/23/2014 09:45:50
+
+    Name                                        Base        Top      Size
+    --------------------------------------- ----------- ----------- ---------
+    Segment: FAR_BSS                             E:033E      E:033F        2h
+    Segment: FAR_DATA                            E:0AB3      E:0ABF        dh
+    Segment: menu_TEXT                           C:61E9      C:652C      344h
+    Segment: ROM_TEXT                            C:2C6D      C:2C97       2bh
+
+
+Module: .\SINLUT.C (File: sinLUT.obj) Version: 1:0 06/23/2014 09:12:11
+
+    Name                                        Base        Top      Size
+    --------------------------------------- ----------- ----------- ---------
+    Segment: FAR_DATA                            E:0386      E:0887      502h
+
+
+Module: .\TIME.C (File: time.obj) Version: 1:0 06/23/2014 09:12:11
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: __VECTORS                           C:0000      C:000D        eh
-    Segment: time_TEXT                           C:2BE0      C:2DD5      1f6h
+    Segment: time_TEXT                           C:5EAD      C:60A2      1f6h
+
+
+Module: C:\Users\s122554\Desktop\ArkanoidZ8\zsldevinit.asm (File: zsldevinit.obj) Version: 1:0 06/23/2014 09:12:10
+
+    Name                                        Base        Top      Size
+    --------------------------------------- ----------- ----------- ---------
+    Segment: CODE                                C:2978      C:2979        2h
+    Segment: FAR_DATA                            E:0360      E:0364        5h
 
 
 Module: COMMON\ABS.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:08
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: abs_TEXT                            C:37B6      C:37F3       3eh
+    Segment: abs_TEXT                            C:6F0D      C:6F4A       3eh
 
 
 Module: common\fpdumyl.asm (File: fpdumyL.obj) Version: 1:0 02/23/2005 13:22:38
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:003A      C:003A        1h
-    Segment: FAR_BSS                             E:02C3      E:02C6        4h
+    Segment: CODE                                C:297A      C:297A        1h
+    Segment: FAR_BSS                             E:0340      E:0343        4h
 
 
 Module: common\frame.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:20
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:003B      C:00A1       67h
+    Segment: CODE                                C:297B      C:29E1       67h
 
 
 Module: COMMON\PRINT_GLOBALS.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:11
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: FAR_BSS                             E:02C7      E:02E1       1bh
-    Segment: FAR_DATA                            E:09F1      E:09F2        2h
+    Segment: FAR_BSS                             E:0344      E:035E       1bh
+    Segment: FAR_DATA                            E:0A6F      E:0A70        2h
 
 
 Module: COMMON\PRINT_PUTCH.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:11
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: t_putch_TEXT                        C:3562      C:3577       16h
+    Segment: t_putch_TEXT                        C:6CB9      C:6CCE       16h
 
 
 Module: COMMON\PRINT_PUTROMSTRING.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:12
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: mstring_TEXT                        C:3769      C:37B5       4dh
+    Segment: mstring_TEXT                        C:6EC0      C:6F0C       4dh
 
 
 Module: COMMON\PRINT_PUTSTRING.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:12
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: tstring_TEXT                        C:35A7      C:3768      1c2h
+    Segment: tstring_TEXT                        C:6CFE      C:6EBF      1c2h
 
 
 Module: COMMON\PRINT_SEND.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:12
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: nt_send_TEXT                        C:2EB8      C:308B      1d4h
+    Segment: nt_send_TEXT                        C:660F      C:67E2      1d4h
 
 
 Module: COMMON\PRINT_SPUTCH.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:11
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: _sputch_TEXT                        C:3578      C:35A6       2fh
+    Segment: _sputch_TEXT                        C:6CCF      C:6CFD       2fh
 
 
 Module: COMMON\PRINT_UPUTCH.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:11
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: _uputch_TEXT                        C:3549      C:3561       19h
+    Segment: _uputch_TEXT                        C:6CA0      C:6CB8       19h
 
 
 Module: COMMON\SIO.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:13
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: FAR_DATA                            E:09F0      E:09F0        1h
-    Segment: sio_TEXT                            C:2DD6      C:2EB7       e2h
+    Segment: FAR_DATA                            E:0A6E      E:0A6E        1h
+    Segment: sio_TEXT                            C:652D      C:660E       e2h
 
 
 Module: common\sldiv.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:01FD      C:0257       5bh
+    Segment: CODE                                C:2B5C      C:2BB6       5bh
 
 
 Module: COMMON\STRLEN.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:14
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: strlen_TEXT                         C:34BC      C:34FD       42h
+    Segment: strlen_TEXT                         C:6C13      C:6C54       42h
 
 
 Module: common\swdiv.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:00A2      C:00DC       3bh
+    Segment: CODE                                C:29E2      C:2A1C       3bh
+
+
+Module: common\ubdiv.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
+
+    Name                                        Base        Top      Size
+    --------------------------------------- ----------- ----------- ---------
+    Segment: CODE                                C:2AE8      C:2B06       1fh
 
 
 Module: common\ucase.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:0289      C:02C6       3eh
+    Segment: CODE                                C:2BE8      C:2C25       3eh
 
 
 Module: common\uldiv.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:01A8      C:01FC       55h
+    Segment: CODE                                C:2B07      C:2B5B       55h
 
 
 Module: common\ulmul.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:00DD      C:0174       98h
+    Segment: CODE                                C:2A1D      C:2AB4       98h
 
 
 Module: COMMON\ULTOA.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:16
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: ultoa_TEXT                          C:30A3      C:34BB      419h
+    Segment: ultoa_TEXT                          C:67FA      C:6C12      419h
 
 
 Module: COMMON\UREVERSE.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:17
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: reverse_TEXT                        C:37F4      C:38C8       d5h
+    Segment: reverse_TEXT                        C:6F4B      C:701F       d5h
 
 
 Module: COMMON\USTOA.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:18
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: ustoa_TEXT                          C:3522      C:3548       27h
+    Segment: ustoa_TEXT                          C:6C79      C:6C9F       27h
 
 
 Module: COMMON\UULTOA.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:18
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: uultoa_TEXT                         C:38C9      C:3B51      289h
+    Segment: uultoa_TEXT                         C:7020      C:72A8      289h
 
 
 Module: COMMON\UUSTOA.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:18
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: uustoa_TEXT                         C:34FE      C:3521       24h
+    Segment: uustoa_TEXT                         C:6C55      C:6C78       24h
 
 
 Module: common\uwdiv.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:0258      C:0288       31h
+    Segment: CODE                                C:2BB7      C:2BE7       31h
 
 
 Module: common\uwmul.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:0175      C:01A7       33h
-
-
-Module: D:\GitHub\30010_Programmeringsprojekt\zsldevinit.asm (File: zsldevinit.obj) Version: 1:0 06/16/2014 09:08:29
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:0038      C:0039        2h
-    Segment: FAR_DATA                            E:02E3      E:02E7        5h
+    Segment: CODE                                C:2AB5      C:2AE7       33h
 
 
 Module: get_freq.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: getfreq_TEXT                        C:308C      C:30A2       17h
+    Segment: getfreq_TEXT                        C:67E3      C:67F9       17h
 
 EXTERNAL DEFINITIONS:
 =====================
 
 Symbol                             Address   Module          Segment
 -------------------------------- ----------- --------------- --------------------------------
-_0__far_atof                          E:02C3 fpdumyl         FAR_BSS                         
-_0__far_frexp                         E:02C3 fpdumyl         FAR_BSS                         
-_0__far_modf                          E:02C3 fpdumyl         FAR_BSS                         
-_0__far_strtod                        E:02C3 fpdumyl         FAR_BSS                         
-_0__near_atof                         E:02C3 fpdumyl         FAR_BSS                         
-_0__near_frexp                        E:02C3 fpdumyl         FAR_BSS                         
-_0__near_modf                         E:02C3 fpdumyl         FAR_BSS                         
-_0__near_strtod                       E:02C3 fpdumyl         FAR_BSS                         
-_0__u_dtoe                            E:02C3 fpdumyl         FAR_BSS                         
-_0__u_dtof                            E:02C3 fpdumyl         FAR_BSS                         
-_0__u_dtog                            E:02C3 fpdumyl         FAR_BSS                         
-_0__u_flt_info                        E:02C3 fpdumyl         FAR_BSS                         
-_0__u_flt_rnd                         E:02C3 fpdumyl         FAR_BSS                         
-_0_acos                               E:02C3 fpdumyl         FAR_BSS                         
-_0_asin                               E:02C3 fpdumyl         FAR_BSS                         
-_0_atan                               E:02C3 fpdumyl         FAR_BSS                         
-_0_atan2                              E:02C3 fpdumyl         FAR_BSS                         
-_0_ceil                               E:02C3 fpdumyl         FAR_BSS                         
-_0_cosh                               E:02C3 fpdumyl         FAR_BSS                         
-_0_exp                                E:02C3 fpdumyl         FAR_BSS                         
-_0_fabs                               E:02C3 fpdumyl         FAR_BSS                         
-_0_floor                              E:02C3 fpdumyl         FAR_BSS                         
-_0_fmod                               E:02C3 fpdumyl         FAR_BSS                         
-_0_ldexp                              E:02C3 fpdumyl         FAR_BSS                         
-_0_log                                E:02C3 fpdumyl         FAR_BSS                         
-_0_log10                              E:02C3 fpdumyl         FAR_BSS                         
-_0_pow                                E:02C3 fpdumyl         FAR_BSS                         
-_0_sinh                               E:02C3 fpdumyl         FAR_BSS                         
-_0_sqrt                               E:02C3 fpdumyl         FAR_BSS                         
-_0_tan                                E:02C3 fpdumyl         FAR_BSS                         
-_0_tanh                               E:02C3 fpdumyl         FAR_BSS                         
-_1__far_frexp                         E:02C3 fpdumyl         FAR_BSS                         
-_1__far_modf                          E:02C3 fpdumyl         FAR_BSS                         
-_1__far_strtod                        E:02C3 fpdumyl         FAR_BSS                         
-_1__near_frexp                        E:02C3 fpdumyl         FAR_BSS                         
-_1__near_modf                         E:02C3 fpdumyl         FAR_BSS                         
-_1__near_strtod                       E:02C3 fpdumyl         FAR_BSS                         
-_1__u_dtoe                            E:02C3 fpdumyl         FAR_BSS                         
-_1__u_dtof                            E:02C3 fpdumyl         FAR_BSS                         
-_1__u_dtog                            E:02C3 fpdumyl         FAR_BSS                         
-_1__u_flt_info                        E:02C3 fpdumyl         FAR_BSS                         
-_1__u_flt_rnd                         E:02C3 fpdumyl         FAR_BSS                         
-_1_atan2                              E:02C3 fpdumyl         FAR_BSS                         
-_1_fmod                               E:02C3 fpdumyl         FAR_BSS                         
-_1_ldexp                              E:02C3 fpdumyl         FAR_BSS                         
-_1_pow                                E:02C3 fpdumyl         FAR_BSS                         
-_1_strtod                             E:02C3 fpdumyl         FAR_BSS                         
-_2__u_dtoe                            E:02C3 fpdumyl         FAR_BSS                         
-_2__u_dtof                            E:02C3 fpdumyl         FAR_BSS                         
-_2__u_dtog                            E:02C3 fpdumyl         FAR_BSS                         
-_2__u_flt_info                        E:02C3 fpdumyl         FAR_BSS                         
-___print_buff                         E:02C7 PRINT_GLOBALS   FAR_BSS                         
-___print_fmt                          E:02D3 PRINT_GLOBALS   FAR_BSS                         
-___print_leading_char                 E:02DF PRINT_GLOBALS   FAR_BSS                         
-___print_len                          E:02DE PRINT_GLOBALS   FAR_BSS                         
-___print_out                          E:02E0 PRINT_GLOBALS   FAR_BSS                         
-___print_putch                        C:3562 PRINT_PUTCH     t_putch_TEXT                    
-___print_putromstring                 C:3769 PRINT_PUTROMSTR mstring_TEXT                    
-___print_send                         C:2EB8 PRINT_SEND      nt_send_TEXT                    
-___print_sendstring                   C:35A7 PRINT_PUTSTRING tstring_TEXT                    
-___print_sputch                       C:3578 PRINT_SPUTCH    _sputch_TEXT                    
-___print_uputch                       C:3549 PRINT_UPUTCH    _uputch_TEXT                    
-___print_xputch                       E:09F1 PRINT_GLOBALS   FAR_DATA                        
-__close_periphdevice                  C:0039 zsldevinit      CODE                            
-__far_atof                            C:003A fpdumyl         CODE                            
-__far_frexp                           C:003A fpdumyl         CODE                            
-__far_modf                            C:003A fpdumyl         CODE                            
-__far_strlen                          C:34BC STRLEN          strlen_TEXT                     
-__far_strtod                          C:003A fpdumyl         CODE                            
-__fpadd                               C:003A fpdumyl         CODE                            
-__fpcmp                               C:003A fpdumyl         CODE                            
-__fpdiv                               C:003A fpdumyl         CODE                            
-__fpftol                              C:003A fpdumyl         CODE                            
-__fpltof                              C:003A fpdumyl         CODE                            
-__fpmul                               C:003A fpdumyl         CODE                            
-__fpneg                               C:003A fpdumyl         CODE                            
-__fppack                              C:003A fpdumyl         CODE                            
-__fpsub                               C:003A fpdumyl         CODE                            
-__fpultof                             C:003A fpdumyl         CODE                            
-__fpupop1                             C:003A fpdumyl         CODE                            
-__fpupop2                             C:003A fpdumyl         CODE                            
-__framereset                          C:0066 frame           CODE                            
-__frameset                            C:0047 frame           CODE                            
-__frameset0                           C:0045 frame           CODE                            
-__frameset00                          C:0043 frame           CODE                            
-__iframereset                         C:007D frame           CODE                            
-__iframeset00                         C:003B frame           CODE                            
-__intrp                               E:02E2 startupl        FAR_DATA                        
-__near_atof                           C:003A fpdumyl         CODE                            
-__near_frexp                          C:003A fpdumyl         CODE                            
-__near_modf                           C:003A fpdumyl         CODE                            
-__near_strtod                         C:003A fpdumyl         CODE                            
-__open_periphdevice                   C:0038 zsldevinit      CODE                            
-__sldiv                               C:01FD sldiv           CODE                            
-__slmul                               C:00DD ulmul           CODE                            
-__swdiv                               C:00A2 swdiv           CODE                            
-__swmul                               C:0175 uwmul           CODE                            
-__u_dtoe                              C:003A fpdumyl         CODE                            
-__u_dtof                              C:003A fpdumyl         CODE                            
-__u_dtog                              C:003A fpdumyl         CODE                            
-__u_flt_info                          C:003A fpdumyl         CODE                            
-__u_flt_rnd                           C:003A fpdumyl         CODE                            
-__u_ltoa                              C:30A3 ULTOA           ultoa_TEXT                      
-__u_reverse                           C:37F4 UREVERSE        reverse_TEXT                    
-__u_stoa                              C:3522 USTOA           ustoa_TEXT                      
-__u_ultoa                             C:38C9 UULTOA          uultoa_TEXT                     
-__u_ustoa                             C:34FE UUSTOA          uustoa_TEXT                     
-__ucase                               C:0289 ucase           CODE                            
-__uldiv                               C:01A8 uldiv           CODE                            
-__ulmul                               C:00DD ulmul           CODE                            
+_0__far_atof                          E:0340 fpdumyl         FAR_BSS                         
+_0__far_frexp                         E:0340 fpdumyl         FAR_BSS                         
+_0__far_modf                          E:0340 fpdumyl         FAR_BSS                         
+_0__far_strtod                        E:0340 fpdumyl         FAR_BSS                         
+_0__near_atof                         E:0340 fpdumyl         FAR_BSS                         
+_0__near_frexp                        E:0340 fpdumyl         FAR_BSS                         
+_0__near_modf                         E:0340 fpdumyl         FAR_BSS                         
+_0__near_strtod                       E:0340 fpdumyl         FAR_BSS                         
+_0__u_dtoe                            E:0340 fpdumyl         FAR_BSS                         
+_0__u_dtof                            E:0340 fpdumyl         FAR_BSS                         
+_0__u_dtog                            E:0340 fpdumyl         FAR_BSS                         
+_0__u_flt_info                        E:0340 fpdumyl         FAR_BSS                         
+_0__u_flt_rnd                         E:0340 fpdumyl         FAR_BSS                         
+_0_acos                               E:0340 fpdumyl         FAR_BSS                         
+_0_asin                               E:0340 fpdumyl         FAR_BSS                         
+_0_atan                               E:0340 fpdumyl         FAR_BSS                         
+_0_atan2                              E:0340 fpdumyl         FAR_BSS                         
+_0_ceil                               E:0340 fpdumyl         FAR_BSS                         
+_0_cosh                               E:0340 fpdumyl         FAR_BSS                         
+_0_exp                                E:0340 fpdumyl         FAR_BSS                         
+_0_fabs                               E:0340 fpdumyl         FAR_BSS                         
+_0_floor                              E:0340 fpdumyl         FAR_BSS                         
+_0_fmod                               E:0340 fpdumyl         FAR_BSS                         
+_0_ldexp                              E:0340 fpdumyl         FAR_BSS                         
+_0_log                                E:0340 fpdumyl         FAR_BSS                         
+_0_log10                              E:0340 fpdumyl         FAR_BSS                         
+_0_pow                                E:0340 fpdumyl         FAR_BSS                         
+_0_sinh                               E:0340 fpdumyl         FAR_BSS                         
+_0_sqrt                               E:0340 fpdumyl         FAR_BSS                         
+_0_tan                                E:0340 fpdumyl         FAR_BSS                         
+_0_tanh                               E:0340 fpdumyl         FAR_BSS                         
+_1__far_frexp                         E:0340 fpdumyl         FAR_BSS                         
+_1__far_modf                          E:0340 fpdumyl         FAR_BSS                         
+_1__far_strtod                        E:0340 fpdumyl         FAR_BSS                         
+_1__near_frexp                        E:0340 fpdumyl         FAR_BSS                         
+_1__near_modf                         E:0340 fpdumyl         FAR_BSS                         
+_1__near_strtod                       E:0340 fpdumyl         FAR_BSS                         
+_1__u_dtoe                            E:0340 fpdumyl         FAR_BSS                         
+_1__u_dtof                            E:0340 fpdumyl         FAR_BSS                         
+_1__u_dtog                            E:0340 fpdumyl         FAR_BSS                         
+_1__u_flt_info                        E:0340 fpdumyl         FAR_BSS                         
+_1__u_flt_rnd                         E:0340 fpdumyl         FAR_BSS                         
+_1_atan2                              E:0340 fpdumyl         FAR_BSS                         
+_1_fmod                               E:0340 fpdumyl         FAR_BSS                         
+_1_ldexp                              E:0340 fpdumyl         FAR_BSS                         
+_1_pow                                E:0340 fpdumyl         FAR_BSS                         
+_1_strtod                             E:0340 fpdumyl         FAR_BSS                         
+_2__u_dtoe                            E:0340 fpdumyl         FAR_BSS                         
+_2__u_dtof                            E:0340 fpdumyl         FAR_BSS                         
+_2__u_dtog                            E:0340 fpdumyl         FAR_BSS                         
+_2__u_flt_info                        E:0340 fpdumyl         FAR_BSS                         
+___print_buff                         E:0344 PRINT_GLOBALS   FAR_BSS                         
+___print_fmt                          E:0350 PRINT_GLOBALS   FAR_BSS                         
+___print_leading_char                 E:035C PRINT_GLOBALS   FAR_BSS                         
+___print_len                          E:035B PRINT_GLOBALS   FAR_BSS                         
+___print_out                          E:035D PRINT_GLOBALS   FAR_BSS                         
+___print_putch                        C:6CB9 PRINT_PUTCH     t_putch_TEXT                    
+___print_putromstring                 C:6EC0 PRINT_PUTROMSTR mstring_TEXT                    
+___print_send                         C:660F PRINT_SEND      nt_send_TEXT                    
+___print_sendstring                   C:6CFE PRINT_PUTSTRING tstring_TEXT                    
+___print_sputch                       C:6CCF PRINT_SPUTCH    _sputch_TEXT                    
+___print_uputch                       C:6CA0 PRINT_UPUTCH    _uputch_TEXT                    
+___print_xputch                       E:0A6F PRINT_GLOBALS   FAR_DATA                        
+__close_periphdevice                  C:2979 zsldevinit      CODE                            
+__far_atof                            C:297A fpdumyl         CODE                            
+__far_frexp                           C:297A fpdumyl         CODE                            
+__far_modf                            C:297A fpdumyl         CODE                            
+__far_strlen                          C:6C13 STRLEN          strlen_TEXT                     
+__far_strtod                          C:297A fpdumyl         CODE                            
+__fpadd                               C:297A fpdumyl         CODE                            
+__fpcmp                               C:297A fpdumyl         CODE                            
+__fpdiv                               C:297A fpdumyl         CODE                            
+__fpftol                              C:297A fpdumyl         CODE                            
+__fpltof                              C:297A fpdumyl         CODE                            
+__fpmul                               C:297A fpdumyl         CODE                            
+__fpneg                               C:297A fpdumyl         CODE                            
+__fppack                              C:297A fpdumyl         CODE                            
+__fpsub                               C:297A fpdumyl         CODE                            
+__fpultof                             C:297A fpdumyl         CODE                            
+__fpupop1                             C:297A fpdumyl         CODE                            
+__fpupop2                             C:297A fpdumyl         CODE                            
+__framereset                          C:29A6 frame           CODE                            
+__frameset                            C:2987 frame           CODE                            
+__frameset0                           C:2985 frame           CODE                            
+__frameset00                          C:2983 frame           CODE                            
+__iframereset                         C:29BD frame           CODE                            
+__iframeset00                         C:297B frame           CODE                            
+__intrp                               E:035F startupl        FAR_DATA                        
+__near_atof                           C:297A fpdumyl         CODE                            
+__near_frexp                          C:297A fpdumyl         CODE                            
+__near_modf                           C:297A fpdumyl         CODE                            
+__near_strtod                         C:297A fpdumyl         CODE                            
+__open_periphdevice                   C:2978 zsldevinit      CODE                            
+__sldiv                               C:2B5C sldiv           CODE                            
+__slmul                               C:2A1D ulmul           CODE                            
+__swdiv                               C:29E2 swdiv           CODE                            
+__swmul                               C:2AB5 uwmul           CODE                            
+__u_dtoe                              C:297A fpdumyl         CODE                            
+__u_dtof                              C:297A fpdumyl         CODE                            
+__u_dtog                              C:297A fpdumyl         CODE                            
+__u_flt_info                          C:297A fpdumyl         CODE                            
+__u_flt_rnd                           C:297A fpdumyl         CODE                            
+__u_ltoa                              C:67FA ULTOA           ultoa_TEXT                      
+__u_reverse                           C:6F4B UREVERSE        reverse_TEXT                    
+__u_stoa                              C:6C79 USTOA           ustoa_TEXT                      
+__u_ultoa                             C:7020 UULTOA          uultoa_TEXT                     
+__u_ustoa                             C:6C55 UUSTOA          uustoa_TEXT                     
+__ubdiv                               C:2AE8 ubdiv           CODE                            
+__ucase                               C:2BE8 ucase           CODE                            
+__uldiv                               C:2B07 uldiv           CODE                            
+__ulmul                               C:2A1D ulmul           CODE                            
 __user_frequency                    01194000 (User Defined)
-__uwdiv                               C:0258 uwdiv           CODE                            
-__uwmul                               C:0175 uwmul           CODE                            
-_abs                                  C:37B6 ABS             abs_TEXT                        
-_acos                                 C:003A fpdumyl         CODE                            
-_angle                                C:0DA5 MAIN            main_TEXT                       
-_arccos                               C:21D2 MATHFIX         mathfix_TEXT                    
-_arcsin                               C:20EA MATHFIX         mathfix_TEXT                    
-_ARCSIN                               E:0708 SINLUT          FAR_DATA                        
-_asin                                 C:003A fpdumyl         CODE                            
-_atan                                 C:003A fpdumyl         CODE                            
-_atan2                                C:003A fpdumyl         CODE                            
-_ball_p                               E:010B MAIN            FAR_BSS                         
-_ball_updateFLAG                      E:0107 MAIN            FAR_BSS                         
-_ball_v                               E:0113 MAIN            FAR_BSS                         
-_ballMoving                           E:02FF MAIN            FAR_DATA                        
-_bgcolor                              C:0A40 ANSI            ansi_TEXT                       
-_blink                                C:04BE ANSI            ansi_TEXT                       
-_blockh                               E:02FC MAIN            FAR_DATA                        
-_blocklen                             E:02FB MAIN            FAR_DATA                        
-_c_startup                            C:0320 startupl        startup                         
-_ceil                                 C:003A fpdumyl         CODE                            
-_character_data                       E:080A LED             FAR_DATA                        
-_clockLed                             C:292F LED             led_TEXT                        
-_close_periphdevice                   C:0039 zsldevinit      CODE                            
-_clreol                               C:03C2 ANSI            ansi_TEXT                       
-_clrscr                               C:0391 ANSI            ansi_TEXT                       
-_color                                C:0A8B ANSI            ansi_TEXT                       
-_column                               E:0109 MAIN            FAR_BSS                         
-_cos                                  C:20AD MATHFIX         mathfix_TEXT                    
-_cosh                                 C:003A fpdumyl         CODE                            
-_defaultTileColor                     E:02FA MAIN            FAR_DATA                        
-_dotP                                 C:2214 MATHFIX         mathfix_TEXT                    
-_drawBall                             C:17D5 MAIN            main_TEXT                       
-_drawStriker                          C:18AC MAIN            main_TEXT                       
-_drawTile                             C:0919 ANSI            ansi_TEXT                       
-_drawTiles                            C:0E5F MAIN            main_TEXT                       
+__uwdiv                               C:2BB7 uwdiv           CODE                            
+__uwmul                               C:2AB5 uwmul           CODE                            
+_abs                                  C:6F0D ABS             abs_TEXT                        
+_acos                                 C:297A fpdumyl         CODE                            
+_addLives                             C:3899 MAIN            main_TEXT                       
+_addPoints                            C:3832 MAIN            main_TEXT                       
+_addShots                             C:3984 MAIN            main_TEXT                       
+_angle                                C:3778 MAIN            main_TEXT                       
+_arccos                               C:549F MATHFIX         mathfix_TEXT                    
+_arcsin                               C:53B7 MATHFIX         mathfix_TEXT                    
+_ARCSIN                               E:0786 SINLUT          FAR_DATA                        
+_asin                                 C:297A fpdumyl         CODE                            
+_atan                                 C:297A fpdumyl         CODE                            
+_atan2                                C:297A fpdumyl         CODE                            
+_ball_p                               E:010A MAIN            FAR_BSS                         
+_ball_v                               E:0112 MAIN            FAR_BSS                         
+_bgcolor                              C:33B8 ANSI            ansi_TEXT                       
+_blink                                C:2E36 ANSI            ansi_TEXT                       
+_bullits                              E:0300 MAIN            FAR_BSS                         
+_c_startup                            C:2C98 startupl        startup                         
+_ceil                                 C:297A fpdumyl         CODE                            
+_character_data                       E:0888 LED             FAR_DATA                        
+_clockLed                             C:5BFC LED             led_TEXT                        
+_close_periphdevice                   C:2979 zsldevinit      CODE                            
+_clreol                               C:2D3A ANSI            ansi_TEXT                       
+_clrscr                               C:2D09 ANSI            ansi_TEXT                       
+_color                                C:3403 ANSI            ansi_TEXT                       
+_cos                                  C:537A MATHFIX         mathfix_TEXT                    
+_cosh                                 C:297A fpdumyl         CODE                            
+_current_index                        E:033E MENU            FAR_BSS                         
+_dotP                                 C:54E1 MATHFIX         mathfix_TEXT                    
+_drawBall                             C:3B9E MAIN            main_TEXT                       
+_drawBullits                          C:44F5 MAIN            main_TEXT                       
+_drawStriker                          C:36F3 ANSI            ansi_TEXT                       
+_drawTile                             C:3291 ANSI            ansi_TEXT                       
+_drawTiles                            C:3A6E MAIN            main_TEXT                       
 _errno                                E:0100 startupl        FAR_BSS                         
-_exit                                 C:038F startupl        startup                         
-_exp                                  C:003A fpdumyl         CODE                            
-_expand                               C:28ED MATHFIX         mathfix_TEXT                    
-_fabs                                 C:003A fpdumyl         CODE                            
-_far_heapbot                        00000A10 (User Defined)
+_exit                                 C:2D07 startupl        startup                         
+_exp                                  C:297A fpdumyl         CODE                            
+_expand                               C:5BBA MATHFIX         mathfix_TEXT                    
+_fabs                                 C:297A fpdumyl         CODE                            
+_far_heapbot                        00000ABF (User Defined)
 _far_heaptop                        00000EFF (User Defined)
 _far_stack                          00000EFF (User Defined)
-_fgcolor                              C:09AA ANSI            ansi_TEXT                       
-_FIX14_POW                            C:2403 MATHFIX         mathfix_TEXT                    
-_FIX14_SQRT                           C:249D MATHFIX         mathfix_TEXT                    
-_floor                                C:003A fpdumyl         CODE                            
-_fmod                                 C:003A fpdumyl         CODE                            
-_frame                                C:0B72 ANSI            ansi_TEXT                       
-_frameBounds                          E:0300 MAIN            FAR_DATA                        
-_frameChars                           E:02E8 ANSI            FAR_DATA                        
-_frameColor                           E:02F8 MAIN            FAR_DATA                        
-_g_clock0                             E:02E4 zsldevinit      FAR_DATA                        
-_g_clock1                             E:02E4 zsldevinit      FAR_DATA                        
-_g_simulate                           E:02E3 zsldevinit      FAR_DATA                        
-_g_Txflag0                            E:09F3 WRITEUART0      FAR_DATA                        
-_Game                                 E:02A1 MAIN            FAR_BSS                         
-_gameState                            E:010A MAIN            FAR_BSS                         
-_gameState_last                       E:02FE MAIN            FAR_DATA                        
-_get_freq                             C:3090 get_freq        getfreq_TEXT                    
-_getB                                 C:0D7B MAIN            main_TEXT                       
-_gotoxy                               C:03F3 ANSI            ansi_TEXT                       
-_init                                 C:0E0D MAIN            main_TEXT                       
-_init_led                             C:2910 LED             led_TEXT                        
-_init_time                            C:2BFE TIME            time_TEXT                       
-_init_uart                            C:2E04 SIO             sio_TEXT                        
-_initGame                             C:18F6 MAIN            main_TEXT                       
-_ldexp                                C:003A fpdumyl         CODE                            
-_LEDcharNum                           E:09EB LED             FAR_DATA                        
-_LEDcolumn                            E:09EE LED             FAR_DATA                        
-_LEDdigit                             E:09EC LED             FAR_DATA                        
-_LEDscrollCount                       E:09E7 LED             FAR_DATA                        
-_LEDscrollDiv                         E:09E9 LED             FAR_DATA                        
-_LEDsetString                         C:2983 LED             led_TEXT                        
-_LEDupdate                            C:2A8E LED             led_TEXT                        
-_LEDupdateCount                       E:09E5 LED             FAR_DATA                        
+_fgcolor                              C:3322 ANSI            ansi_TEXT                       
+_fireBullit                           C:4F9D MAIN            main_TEXT                       
+_fireButtonAction                     C:4FF1 MAIN            main_TEXT                       
+_FIX14_POW                            C:56D0 MATHFIX         mathfix_TEXT                    
+_FIX14_SQRT                           C:576A MATHFIX         mathfix_TEXT                    
+_floor                                C:297A fpdumyl         CODE                            
+_fmod                                 C:297A fpdumyl         CODE                            
+_frame                                C:34EA ANSI            ansi_TEXT                       
+_frameBounds                          E:0375 MAIN            FAR_DATA                        
+_frameChars                           E:0365 ANSI            FAR_DATA                        
+_g_clock0                             E:0361 zsldevinit      FAR_DATA                        
+_g_clock1                             E:0361 zsldevinit      FAR_DATA                        
+_g_simulate                           E:0360 zsldevinit      FAR_DATA                        
+_g_Txflag0                            E:0A71 WRITEUART0      FAR_DATA                        
+_gameOver                             C:47AF MAIN            main_TEXT                       
+_gameover                             C:14D8 ASCIIART        ROM_DATA                        
+_gameState                            E:0109 MAIN            FAR_BSS                         
+_gameState_last                       E:0379 MAIN            FAR_DATA                        
+_get_freq                             C:67E7 get_freq        getfreq_TEXT                    
+_getB                                 C:3738 MAIN            main_TEXT                       
+_getB_wait                            C:3762 MAIN            main_TEXT                       
+_gotoxy                               C:2D6B ANSI            ansi_TEXT                       
+_init                                 C:37E0 MAIN            main_TEXT                       
+_init_led                             C:5BDD LED             led_TEXT                        
+_init_time                            C:5ECB TIME            time_TEXT                       
+_init_uart                            C:655B SIO             sio_TEXT                        
+_initGame                             C:48DA MAIN            main_TEXT                       
+_ldexp                                C:297A fpdumyl         CODE                            
+_LEDcharNum                           E:0A69 LED             FAR_DATA                        
+_LEDcolumn                            E:0A6C LED             FAR_DATA                        
+_LEDdigit                             E:0A6A LED             FAR_DATA                        
+_LEDscrollCount                       E:0A65 LED             FAR_DATA                        
+_LEDscrollDiv                         E:0A67 LED             FAR_DATA                        
+_LEDsetString                         C:5C50 LED             led_TEXT                        
+_LEDupdate                            C:5D5B LED             led_TEXT                        
+_LEDupdateCount                       E:0A63 LED             FAR_DATA                        
 _LEDupdateFLAG                        E:0106 MAIN            FAR_BSS                         
-_len_farbss                         000001E2 (User Defined)
-_len_fardata                        0000072F (User Defined)
+_len_farbss                         0000025F (User Defined)
+_len_fardata                        00000761 (User Defined)
 _len_nearbss                        00000000 (User Defined)
 _len_neardata                       00000000 (User Defined)
-_lives                                E:011E MAIN            FAR_BSS                         
-_log                                  C:003A fpdumyl         CODE                            
-_log10                                C:003A fpdumyl         CODE                            
-_low_far_romdata                    00003C69 (User Defined)
+_lives                                E:011D MAIN            FAR_BSS                         
+_log                                  C:297A fpdumyl         CODE                            
+_log10                                C:297A fpdumyl         CODE                            
+_low_far_romdata                    000073C0 (User Defined)
 _low_farbss                         00000100 (User Defined)
-_low_fardata                        000002E2 (User Defined)
+_low_fardata                        0000035F (User Defined)
 _low_near_romdata                   00000000 (User Defined)
 _low_nearbss                        00000000 (User Defined)
 _low_neardata                       00000000 (User Defined)
-_main                                 C:1E92 MAIN            main_TEXT                       
+_main                                 C:5023 MAIN            main_TEXT                       
+_menu_isSelected                      C:6515 MENU            menu_TEXT                       
+_menu_next                            C:64ED MENU            menu_TEXT                       
+_menu_prev                            C:6501 MENU            menu_TEXT                       
+_menu_print                           C:61E9 MENU            menu_TEXT                       
+_menu_select                          C:651F MENU            menu_TEXT                       
+_menu_selected                        E:033F MENU            FAR_BSS                         
+_menu_setIndex                        C:64D0 MENU            menu_TEXT                       
+_menuScreen                           C:4D66 MAIN            main_TEXT                       
 _milis                                E:0102 MAIN            FAR_BSS                         
-_moveStriker                          C:1B4D MAIN            main_TEXT                       
+_moveStriker                          C:4A72 MAIN            main_TEXT                       
 _near_heapbot                       000000EF (User Defined)
 _near_heaptop                       000000FF (User Defined)
 _near_stack                         000000FF (User Defined)
-_newGame                              C:1CDF MAIN            main_TEXT                       
-_open_periphdevice                    C:0038 zsldevinit      CODE                            
-_points                               E:011F MAIN            FAR_BSS                         
-_pow                                  C:003A fpdumyl         CODE                            
-_printBallInfo                        C:1A9B MAIN            main_TEXT                       
-_printFix                             C:27F7 MATHFIX         mathfix_TEXT                    
-_printStatus                          C:19E0 MAIN            main_TEXT                       
-_printTime                            C:2C2F TIME            time_TEXT                       
-_pString                              E:02A3 LED             FAR_BSS                         
-_putch                                C:3B52 PUTCH           putch_TEXT                      
-_resetbgcolor                         C:0B41 ANSI            ansi_TEXT                       
-_reverse                              C:0522 ANSI            ansi_TEXT                       
-_rotate                               C:266E MATHFIX         mathfix_TEXT                    
-_select_port                          C:2DD6 SIO             sio_TEXT                        
-_setVec                               C:201B MATHFIX         mathfix_TEXT                    
-_sin                                  C:2076 MATHFIX         mathfix_TEXT                    
-_SIN                                  E:0308 SINLUT          FAR_DATA                        
-_sinh                                 C:003A fpdumyl         CODE                            
-_sqrt                                 C:003A fpdumyl         CODE                            
-_striker_updateFLAG                   E:0108 MAIN            FAR_BSS                         
-_striker_v                            E:011D MAIN            FAR_BSS                         
-_strikerColor                         E:02F9 MAIN            FAR_DATA                        
-_strikerLen                           E:011C MAIN            FAR_BSS                         
-_strikerPos                           E:011B MAIN            FAR_BSS                         
-_strlen                               C:2BA4 HELPER          helper_TEXT                     
-_tan                                  C:003A fpdumyl         CODE                            
-_tanh                                 C:003A fpdumyl         CODE                            
-_tileRows                             E:02FD MAIN            FAR_DATA                        
-_Tiles                                E:0121 MAIN            FAR_BSS                         
-_timer0int                            C:2BE0 TIME            time_TEXT                       
-_underline                            C:045A ANSI            ansi_TEXT                       
-_update_ball                          C:0F82 MAIN            main_TEXT                       
-_updateGameState                      C:1D68 MAIN            main_TEXT                       
-_vecAngle                             C:2381 MATHFIX         mathfix_TEXT                    
-_vecMag                               C:2587 MATHFIX         mathfix_TEXT                    
-_vecMagSquared                        C:22AD MATHFIX         mathfix_TEXT                    
-_videoBuf                             E:02A5 LED             FAR_BSS                         
-_window                               C:0586 ANSI            ansi_TEXT                       
-_write_UART0                          C:3BAF WRITEUART0      teuart0_TEXT                    
+_newGame                              C:4BEB MAIN            main_TEXT                       
+_open_periphdevice                    C:2978 zsldevinit      CODE                            
+_points                               E:011E MAIN            FAR_BSS                         
+_pow                                  C:297A fpdumyl         CODE                            
+_printFix                             C:5AC4 MATHFIX         mathfix_TEXT                    
+_printGameOver                        C:6146 ASCIIART        sciiart_TEXT                    
+_printStartscreen                     C:60A3 ASCIIART        sciiart_TEXT                    
+_printTime                            C:5EFC TIME            time_TEXT                       
+_pString                              E:031E LED             FAR_BSS                         
+_putch                                C:72A9 PUTCH           putch_TEXT                      
+_rand                                 C:51E0 MATHFIX         mathfix_TEXT                    
+_rand_A                               E:037E MATHFIX         FAR_DATA                        
+_rand_M                               E:0382 MATHFIX         FAR_DATA                        
+_rand_number                          E:037A MATHFIX         FAR_DATA                        
+_randSeed                             C:51C1 MATHFIX         mathfix_TEXT                    
+_resetbgcolor                         C:34B9 ANSI            ansi_TEXT                       
+_reverse                              C:2E9A ANSI            ansi_TEXT                       
+_rotate                               C:593B MATHFIX         mathfix_TEXT                    
+_select_port                          C:652D SIO             sio_TEXT                        
+_setVec                               C:5166 MATHFIX         mathfix_TEXT                    
+_shots                                E:011F MAIN            FAR_BSS                         
+_sin                                  C:5343 MATHFIX         mathfix_TEXT                    
+_SIN                                  E:0386 SINLUT          FAR_DATA                        
+_sinh                                 C:297A fpdumyl         CODE                            
+_sqrt                                 C:297A fpdumyl         CODE                            
+_startscreen                          C:0038 ASCIIART        ROM_DATA                        
+_startScreen                          C:4DF2 MAIN            main_TEXT                       
+_striker_v                            E:011C MAIN            FAR_BSS                         
+_strikerLen                           E:011B MAIN            FAR_BSS                         
+_strikerPos                           E:011A MAIN            FAR_BSS                         
+_strlen                               C:5E71 HELPER          helper_TEXT                     
+_tan                                  C:297A fpdumyl         CODE                            
+_tanh                                 C:297A fpdumyl         CODE                            
+_tileRows                             E:0107 MAIN            FAR_BSS                         
+_Tiles                                E:0120 MAIN            FAR_BSS                         
+_tiles_left                           E:0108 MAIN            FAR_BSS                         
+_timer0int                            C:5EAD TIME            time_TEXT                       
+_underline                            C:2DD2 ANSI            ansi_TEXT                       
+_updateGameState                      C:4E7D MAIN            main_TEXT                       
+_vecAngle                             C:564E MATHFIX         mathfix_TEXT                    
+_vecMag                               C:5854 MATHFIX         mathfix_TEXT                    
+_vecMagSquared                        C:557A MATHFIX         mathfix_TEXT                    
+_videoBuf                             E:0320 LED             FAR_BSS                         
+_window                               C:2EFE ANSI            ansi_TEXT                       
+_winScreen                            C:48CD MAIN            main_TEXT                       
+_write_UART0                          C:7306 WRITEUART0      teuart0_TEXT                    
 _zsl_g_clock_xdefine                01194000 (User Defined)
 
-248 external symbol(s).
+267 external symbol(s).
 
 
 START ADDRESS:
 ==============
-(C:0320) set in module ..\..\src\boot\common\startupl.asm.
+(C:2C98) set in module ..\..\src\boot\common\startupl.asm.
 
 CALL GRAPH
 ==========

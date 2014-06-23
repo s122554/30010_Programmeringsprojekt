@@ -3,17 +3,19 @@
 #include <helper.h>
 #include <ansi.h>
 
+#define MENU_ITEM_COUNT 4
 extern const unsigned char frameBounds[4];
 unsigned char current_index, menu_selected;
 
 void menu_print(){
-	unsigned int linespace = 10;
-	char indent = 10;
-	char strLen = strlen("STREET FIGHTER BALL BUSTER");
+	unsigned int linespace = 5;
+	char indent = 3;
+	char strLen = strlen("TILE FIGHTER");
 	menu_selected = 0;
 
+	reverse(0);
 	gotoxy((frameBounds[2]+frameBounds[1]-strLen)/2, frameBounds[1]+linespace);	
-	printf("STREET FIGHTER BALL BUSTER");
+	printf("TILE FIGHTER");
 	
 	if(current_index == 0) reverse(1); else reverse(0);
 	gotoxy((frameBounds[2]+frameBounds[1]-strLen)/2+indent, frameBounds[1]+linespace*2);
@@ -31,19 +33,26 @@ void menu_print(){
 	gotoxy((frameBounds[2]+frameBounds[1]-strLen)/2+indent, frameBounds[1]+linespace*2+3);
 	printf("CHUCK NORRIS");
 
+	if(current_index == 3) reverse(0);
 }
 
 void menu_setIndex(unsigned char index){
-	current_index = index;
+	if(index >= 0 && index < MENU_ITEM_COUNT){
+		current_index = index;
+	}
 }
 
 void menu_next(){
-	current_index++;
+	if(current_index < MENU_ITEM_COUNT-1){
+		current_index++;
+	}
 	menu_print();
 }
 
 void menu_prev(){
-	current_index--;
+	if(current_index > 0){
+		current_index--;
+	}
 	menu_print();
 }
 
