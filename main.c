@@ -19,7 +19,7 @@ volatile char LEDupdateFLAG;
 #define BLOCK_LENGTH 17
 #define BLOCK_HEIGHT 3
 #define TILE_COLUMNS 8
-#define MAX_SHOTS 10
+#define MAX_SHOTS 15
 
 const unsigned char frameBounds[4] = {2,2,139,60};
 
@@ -31,9 +31,11 @@ struct TVector ball_p;
 struct TVector ball_v;
 
 unsigned char strikerPos, strikerLen, striker_v, lives, points, shots;
+unsigned int strikerPeriod, ballPeriod;
+
 
 struct Tile {
-	unsigned char type, hits, destroyed, color;
+	unsigned char type, destroyed, color;
 };
 struct Tile Tiles[8][15];
 
@@ -93,7 +95,14 @@ void addLives(int l){
 
 void addShots(int s){
 	int i;
+	/*
+	if(shots+s >= MAX_SHOTS){
+		s = MAX_SHOTS - shots;
+	}
+	*/
 	shots += s;
+	if(shots > MAX_SHOTS) shots = MAX_SHOTS;
+
 	if(s > 0){
 		gotoxy(frameBounds[2]-shots,frameBounds[1]-1);
 		for(i=0; i<shots; i++){
@@ -106,6 +115,23 @@ void addShots(int s){
 			printf(" ");
 		}
 	}
+}
+
+void destroyTile(unsigned char column, unsigned char row){
+	switch(Tiles[column][row].type){
+		case 1:
+			addLives(rand(1,4));
+			break;
+		case 2:
+			addShots(5);
+			break;
+		default:
+			break;
+	}
+	Tiles[column][row].destroyed = 1;
+	drawTile(frameBounds[0]+1+column*BLOCK_LENGTH, frameBounds[1]+1+row*3, BLOCK_LENGTH, BLOCK_HEIGHT, 79);
+	addPoints(10);
+	if(--tiles_left == 0) gameState = 3;
 }
 
 
@@ -134,6 +160,7 @@ void drawBall(){
 	int strikerCen = (strikerLen/2);
 	long nextAngle;
 	unsigned char column = (next_xPos-frameBounds[0]-1) / BLOCK_LENGTH;
+	unsigned char row = (next_yPos-frameBounds[1]-1) / BLOCK_HEIGHT;
 
 	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
 	printf(" ");
@@ -208,18 +235,11 @@ void drawBall(){
 		}
 
 		// Faster, working, but but more spacious way to check
-		if(next_xPos >= frameBounds[0]+1+column*BLOCK_LENGTH && next_xPos <= frameBounds[0]+1+(column+1)*BLOCK_LENGTH){
-			int n;
-			for(n=0; n<tileRows; n++){
-				if((next_yPos <= frameBounds[1]+3+n*3 && next_yPos >= frameBounds[1]+1+n*3) && !Tiles[column][n].destroyed){
-					if(next_yPos == frameBounds[1]+2+n*3) ball_v.x = -ball_v.x;
-					else ball_v.y = -ball_v.y;
-					Tiles[column][n].destroyed = 1;
-					drawTile(frameBounds[0]+1+column*BLOCK_LENGTH,frameBounds[1]+1+n*3, BLOCK_LENGTH, BLOCK_HEIGHT, 79);
-					addPoints(10);
-					if(--tiles_left == 0) gameState = 3;
-				}
-			}
+		if(row < tileRows && !Tiles[column][row].destroyed){
+			if(next_yPos == frameBounds[1]+2+row*3) ball_v.x = -ball_v.x;
+			else ball_v.y = -ball_v.y;
+
+			destroyTile(column,row);
 		}
 
 		if(next_yPos <= frameBounds[1]){
@@ -255,24 +275,12 @@ void drawBullits(){
 		
 				if(row < tileRows && !Tiles[column][row].destroyed){
 					bullits[i].v = 0;
-					Tiles[column][row].destroyed = 1;
-					drawTile(frameBounds[0]+1+column*BLOCK_LENGTH,frameBounds[1]+1+row*3, BLOCK_LENGTH, BLOCK_HEIGHT, 79); // Delete Tile
-					addPoints(10);
-					if(--tiles_left == 0) gameState = 3;
-
+					destroyTile(column,row);
 				}
 			}
 		}
 	}
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -300,19 +308,21 @@ void initGame(){
 
 	// Init Bullit
 	for(i=0;i<MAX_SHOTS;i++){
-		bullits[i].y = frameBounds[3]-2 -(i*2);
-		bullits[i].x = strikerPos+(strikerLen/2);
 		bullits[i].v = 0;
 	}
 	
+	// Initial lives, points, shots
+	shots = 0;
+	// addShots(MAX_SHOTS);
+	lives = 0;
+	addLives(5);
+	points = 0;
+	addPoints(0);
+
 	// Draw Stuff
 	gotoxy(strikerPos,frameBounds[3]-1);
 	drawStriker(strikerLen);
-	drawBall();
-	drawBullits();
-	addShots(MAX_SHOTS);
-	addLives(5);
-	addPoints(0);
+
 	drawTiles();
 }
 
@@ -345,9 +355,13 @@ void moveStriker(char movex){
 
 void newGame(unsigned char level){
 	int n,i;
+	strikerPeriod = 43;
+	ballPeriod = 161;
+
 	switch(level){
 		case 0: // Easy Mode
 			tileRows = rand(6,8);
+			
 			break;
 		case 1: // Normal Mode
 			tileRows = rand(8,10);
@@ -364,9 +378,21 @@ void newGame(unsigned char level){
 	}
 	for(n=0; n<tileRows; n++){
 		for(i=0; i<TILE_COLUMNS; i++){
+			int rnd = rand(0,100);
+
 			Tiles[i][n].destroyed = 0;
-			Tiles[i][n].hits = 0;
-			Tiles[i][n].color = DEFAULT_TILE_COLOR;
+			if(rnd < 90){
+				Tiles[i][n].color = DEFAULT_TILE_COLOR;
+				Tiles[i][n].type = 0;
+			}
+			else if(rnd < 95){
+				Tiles[i][n].color = 5;
+				Tiles[i][n].type = 1;
+			}
+			else if(rnd < 100){
+				Tiles[i][n].color = 11;
+				Tiles[i][n].type = 2;
+			}
 		}
 	}
 	tiles_left = TILE_COLUMNS*tileRows;
@@ -377,6 +403,8 @@ void newGame(unsigned char level){
 void menuScreen(){
 	unsigned char b, b_last, item;
 	clrscr();
+	randSeed(milis);
+	fgcolor(rand(1,15));
 	menu_print();
   	while(!menu_isSelected()){
 		b = getB();
@@ -402,6 +430,7 @@ void menuScreen(){
 void startScreen(){
 	int b;
 	clrscr();
+	randSeed(milis);
 	printStartscreen();
 	while(1){
 		b = getB();
@@ -420,17 +449,12 @@ void gameOver(){
 	while(1){
 		b = getB();
 		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
-			points = 0;
 			startScreen();
 			break;
 		}
 	}
-//	clrscr();
-//	gotoxy((frameBounds[2]-frameBounds[0])/2,(frameBounds[3]+frameBounds[1])/2);
-//	printf("Want to try again?");
-//	gotoxy((frameBounds[2]-frameBounds[0])/2,(frameBounds[3]+frameBounds[1]+2)/2);
-//	printf("    YES     NO");
 }
+
 void bossPrint(){
 	int i,b;		
 	clrscr();
@@ -450,6 +474,7 @@ void updateGameState(){
 	if(gameState != gameState_last){
 		switch(gameState){
 			case 0: // Reload LvL
+				moveStriker(0);
 				break;
 			case 1: // GamePlay
 				setVec(&ball_v, 1, 0);
@@ -483,10 +508,10 @@ void updateGameState(){
 
 
 void fireBullit(){
-	
 	if(shots > 0){
 		addShots(-1);
 		bullits[shots].x = strikerPos + (strikerLen/2);
+		bullits[shots].y = frameBounds[3]-2;
 		bullits[shots].v = 1;
 	}
 }
@@ -543,8 +568,8 @@ void game(){
 		}
 
 		// clock dividers!
-		if(++ball_milis == 100){ ball_milis = 0; }
-		if(++striker_milis == 61){ striker_milis = 0; }
+		if(++ball_milis == ballPeriod){ ball_milis = 0; }
+		if(++striker_milis == strikerPeriod){ striker_milis = 0; }
 
 		LEDupdate();
 				
@@ -553,10 +578,12 @@ void game(){
 
 void main(){
 	init();
+	//printEazy();
+	
 	startScreen();
 	updateGameState();
 	game();
-
+	
 	do {} while (1 != 2); // stay here always
 }
 

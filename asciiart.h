@@ -6,6 +6,7 @@
 
 void printStartscreen();
 void printGameOver();
+void printEazy();
 
 
 #endif
