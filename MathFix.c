@@ -2,17 +2,13 @@
 #include "sinLUT.h"
 #include "MathFix.h"
 
-
 unsigned long rand_number = 61;
 long rand_A = 13, rand_M = 31;
-
-
 
 void setVec(struct TVector *v, long xin, long yin){
 	v->x = xin << FIX14_SHIFT;
 	v->y = yin << FIX14_SHIFT;
 }
-
 
 unsigned long randSeed(unsigned long seed){
 	rand_number = seed;

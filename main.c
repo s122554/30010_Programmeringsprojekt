@@ -117,8 +117,22 @@ void addShots(int s){
 	}
 }
 
+void destroyTileColumn(unsigned char column){
+	unsigned char row;
+	for(row=0; row<tileRows; row++){
+		if(!Tiles[column][row].destroyed){
+			Tiles[column][row].destroyed = 1;
+			drawTile(frameBounds[0]+1+column*BLOCK_LENGTH, frameBounds[1]+1+row*3, BLOCK_LENGTH, BLOCK_HEIGHT, 79);
+			if(--tiles_left == 0) gameState = 3;
+		}
+	}
+}
+
 void destroyTile(unsigned char column, unsigned char row){
-	addPoints(10);
+	addPoints(10);	
+	Tiles[column][row].destroyed = 1;
+	drawTile(frameBounds[0]+1+column*BLOCK_LENGTH, frameBounds[1]+1+row*3, BLOCK_LENGTH, BLOCK_HEIGHT, 79);
+	if(--tiles_left == 0) gameState = 3;
 	switch(Tiles[column][row].type){
 		case 1:
 			addLives(rand(1,4));
@@ -126,10 +140,10 @@ void destroyTile(unsigned char column, unsigned char row){
 		case 2:
 			addShots( rand(3,8) );
 			break;
- 		case 3:
-			ballPeriod = rand(50,233);
+ 		case 3: // Green - Change Ball Speed
+			ballPeriod = rand(33,333);
 			break;
-		case 4:
+		case 4: // Red - Double your points
 			addPoints(points);
 			break;
 		case 5: // Brown - Crazy Reflection
@@ -138,12 +152,19 @@ void destroyTile(unsigned char column, unsigned char row){
 		case 6: // Brown - Angle Down
 			setVec( &ball_v, 0, 1);
 			break;
+		case 7: // White - Wow !!
+			addShots( rand(3,8) );
+			addPoints(points*4);
+			addLives(rand(1,3));
+			rotate( &ball_v, rand(0,512) );
+			ballPeriod = rand(33,333);
+			break;
+		case 8: // White - Wow !!
+			destroyTileColumn(column);
+			break;
 		default:
 			break;
 	}
-	Tiles[column][row].destroyed = 1;
-	drawTile(frameBounds[0]+1+column*BLOCK_LENGTH, frameBounds[1]+1+row*3, BLOCK_LENGTH, BLOCK_HEIGHT, 79);
-	if(--tiles_left == 0) gameState = 3;
 }
 
 
@@ -157,7 +178,7 @@ void drawTiles(){
 				x = frameBounds[0]+1+i*BLOCK_LENGTH;
 				y = frameBounds[1]+1+n*BLOCK_HEIGHT;
 				drawTile(x, y, BLOCK_LENGTH, BLOCK_HEIGHT, (n+i+1)%2);
-				reverse(1);
+				// reverse(1);
 				gotoxy(x+6,y+1);
 				switch(Tiles[i][n].type){
 					case 1:
@@ -178,8 +199,14 @@ void drawTiles(){
 					case 6:
 						printf("DOWN!");
 						break;
+					case 7:
+						printf("-WOW-");
+						break;
+					case 8:
+						printf("CLEAR");
+						break;
 				}
-				reverse(0);
+				// reverse(0);
 			}
 		}
 	}
@@ -193,9 +220,9 @@ void drawBall(){
 	int next_yPos = (ball_p.y + ball_v.y) >> FIX14_SHIFT;
 	long incidenceAngle = angle();
 	long xAngle = (128 << 14) - incidenceAngle;
+	long nextAngle;
 	int rotation=0, caseSelect;
 	int strikerCen = (strikerLen/2);
-	long nextAngle;
 	unsigned char column = (next_xPos-frameBounds[0]-1) / BLOCK_LENGTH;
 	unsigned char row = (next_yPos-frameBounds[1]-1) / BLOCK_HEIGHT;
 
@@ -227,6 +254,7 @@ void drawBall(){
 				else if(caseSelect == 1){
 					ball_v.x = -ball_v.x;
 					ball_v.y = -ball_v.y;	
+					rotation = (xAngle/3) >> FIX14_SHIFT ;
 				}
 				else if(caseSelect == 2 || caseSelect == 3){
 					ball_v.x = -ball_v.x;
@@ -240,6 +268,8 @@ void drawBall(){
 					ball_v.y = -ball_v.y;
 					rotation = (xAngle/(1+strikerLen-caseSelect)) >> FIX14_SHIFT;
 				}
+
+				rotation += rand(0,10);
 				
 				nextAngle = ((incidenceAngle >> FIX14_SHIFT) + rotation) & 0x1FF;
 				if(nextAngle > 122 ){
@@ -321,48 +351,6 @@ void drawBullits(){
 
 
 
-void winScreen(){
-	clrscr();
-	printStartscreen();
-}
-
-
-
-void initGame(){
-	unsigned char i;
-	
-	fgcolor(DEFAULT_COLOR);
-	frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
-	
-	
-	// Init Striker
-	strikerLen = 9;
-	strikerPos = (frameBounds[2]-frameBounds[0])/2 - strikerLen/2;
-
-	// Init Ball
-	setVec(&ball_p, strikerPos+(strikerLen/2), frameBounds[3]-2);
-	setVec(&ball_v, 0, 0);
-
-	// Init Bullit
-	for(i=0;i<MAX_SHOTS;i++){
-		bullits[i].v = 0;
-	}
-	
-	// Initial lives, points, shots
-	shots = 0;
-	// addShots(MAX_SHOTS);
-	lives = 0;
-	addLives(5);
-	points = 0;
-	addPoints(0);
-
-	// Draw Stuff
-	gotoxy(strikerPos,frameBounds[3]-1);
-	drawStriker(strikerLen);
-
-	drawTiles();
-}
-
 void moveStriker(char movex){
 	char i, y = frameBounds[3]-1;
 	striker_v = 0;
@@ -395,6 +383,7 @@ void newGame(unsigned char level){
 	strikerPeriod = 43;
 	ballPeriod = 161;
 
+	// Select Game Level
 	switch(level){
 		case 0: // Easy Mode
 			tileRows = rand(6,8);
@@ -413,9 +402,10 @@ void newGame(unsigned char level){
 			break;
 	}
 
+	// Init Tiles
 	for(n=0; n<tileRows; n++){
 		for(i=0; i<TILE_COLUMNS; i++){
-			int rnd = rand(0,106);
+			int rnd = rand(0,108);
 
 			Tiles[i][n].destroyed = 0;
 			if(rnd < 90){
@@ -446,18 +436,59 @@ void newGame(unsigned char level){
 				Tiles[i][n].color = 4; // Blue = Weird Angle
 				Tiles[i][n].type = rand(5,7);
 			}
+			else if(rnd < 107){
+				// ballspeed
+				Tiles[i][n].color = 15; // White = -WOW-
+				Tiles[i][n].type = 7;
+			}
+			else if(rnd < 108){
+				// ballspeed
+				Tiles[i][n].color = 9; // Light Red = Clear Row
+				Tiles[i][n].type = 8;
+			}
 		}
 	}
 	tiles_left = TILE_COLUMNS*tileRows;
+		
+	// Init Striker
+	strikerLen = 9;
+	strikerPos = (frameBounds[2]-frameBounds[0])/2 - strikerLen/2;
 
+	// Init Ball
+	setVec(&ball_p, strikerPos+(strikerLen/2), frameBounds[3]-2);
+	setVec(&ball_v, 0, 0);
+
+	// Init Bullit
+	for(i=0;i<MAX_SHOTS;i++){
+		bullits[i].v = 0;
+	}
+	
+	// Init Game Values
 	gameState = 0;
+	lives = 0;
+	addLives(5);
+	shots = 0;
+	points = 0;
+	addPoints(0);
+
+	// Draw Stuff
+	fgcolor(DEFAULT_COLOR);
+	frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
+	
+	// Draw Striker
+	gotoxy(strikerPos,frameBounds[3]-1);
+	drawStriker(strikerLen);
+
+	// Draw Tiles
+	drawTiles();
+
 }
 
 void menuScreen(){
 	unsigned char b, b_last, item;
 	clrscr();
 	randSeed(milis);
-	fgcolor(rand(1,15));
+	fgcolor(DEFAULT_TILE_COLOR);
 	menu_print();
   	while(!menu_isSelected()){
 		b = getB();
@@ -477,7 +508,22 @@ void menuScreen(){
 		}
 	}
 	newGame(item);
-	initGame();
+}
+
+void winScreen(){
+	int b;
+	clrscr();
+	randSeed(milis);
+	LEDsetString("    WINNER",0);
+	printWinScreen();
+	while(1){
+		LEDupdate();
+		b = getB();
+		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
+		 	menuScreen();
+			break;
+		}
+	}
 }
 
 void startScreen(){
@@ -485,7 +531,9 @@ void startScreen(){
 	clrscr();
 	randSeed(milis);
 	printStartscreen();
+	LEDsetString("    Welcome to TILE FIGHTER!",0);
 	while(1){
+		LEDupdate();
 		b = getB();
 		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
 		 	menuScreen();
@@ -528,17 +576,18 @@ void bossPrint(){
 
 
 void updateGameState(){
+	unsigned char i;
 	/*	0: Ball is on striker
 		1: Game is on
 	*/
 	if(gameState != gameState_last){
 		switch(gameState){
-			case 0: // Reload LvL
+			case 0: // NewBall !
 				moveStriker(0);
 				break;
 			case 1: // GamePlay
 				setVec(&ball_v, 1, 0);
-				rotate(&ball_v, -128 - striker_v * 19);
+				rotate(&ball_v, -128 - striker_v * 21);
 				LEDsetString("    ",0);
 				break;
 			case 2: // Game Over
@@ -546,11 +595,9 @@ void updateGameState(){
 				//gameState = 5;
 				break;
 			case 3: //Winner
-				LEDsetString("    WINNER",0);
-				printStartscreen();
+				winScreen();
 				break;
 			case 4: // Startscreen
-				LEDsetString("    Welcome to TILE FIGHTER!",0);
 				startScreen();
 				break;
 			case 5: // Menuscreen
@@ -589,8 +636,7 @@ void fireButtonAction(unsigned char val){
 void game(){
 	unsigned int ball_milis, striker_milis, print_milis;
 	int b_last, b, i, n;
-	unsigned char fire_button_last, fire_button, selected_level;
-	//long mul;
+	unsigned char fire_button_last, fire_button;
 
 	LEDsetString("Play",0);
 
@@ -639,10 +685,13 @@ void game(){
 void main(){
 	init();
 	
-	startScreen();
+	// startScreen();
+	menuScreen();
+	// gameState = 3;
 	updateGameState();
 	game();
 	
+
 	do {} while (1 != 2); // stay here always
 }
 

@@ -6,6 +6,6 @@
 
 void printStartscreen();
 void printGameOver();
-
+void printWinScreen();
 
 #endif
