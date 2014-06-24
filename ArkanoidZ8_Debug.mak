@@ -191,6 +191,7 @@ C:\Users\s122554\Desktop\ArkanoidZ8\asciiart.obj :  \
             C:\PROGRA~2\ZiLOG\ZDSII_~1.3\include\zilog\SIO.H  \
             C:\PROGRA~2\ZiLOG\ZDSII_~1.3\include\zilog\uart.h  \
             C:\PROGRA~2\ZiLOG\ZDSII_~1.3\include\zilog\uartdefs.h  \
+            C:\Users\s122554\Desktop\ARKANO~1\MathFix.h  \
             C:\Users\s122554\Desktop\ARKANO~1\ansi.h  \
             C:\Users\s122554\Desktop\ARKANO~1\asciiart.h
 	 $(CC)  $(CFLAGS) C:\Users\s122554\Desktop\ArkanoidZ8\asciiart.c
@@ -206,6 +207,7 @@ C:\Users\s122554\Desktop\ArkanoidZ8\menu.obj :  \
             C:\PROGRA~2\ZiLOG\ZDSII_~1.3\include\zilog\SIO.H  \
             C:\PROGRA~2\ZiLOG\ZDSII_~1.3\include\zilog\uart.h  \
             C:\PROGRA~2\ZiLOG\ZDSII_~1.3\include\zilog\uartdefs.h  \
+            C:\Users\s122554\Desktop\ARKANO~1\MathFix.h  \
             C:\Users\s122554\Desktop\ARKANO~1\ansi.h  \
             C:\Users\s122554\Desktop\ARKANO~1\helper.h  \
             C:\Users\s122554\Desktop\ARKANO~1\menu.h

@@ -13,11 +13,13 @@
 volatile unsigned long milis;
 volatile char LEDupdateFLAG;
 
-#define defaultTileColor 6
+#define DEFAULT_TILE_COLOR 6
+#define DEFAULT_COLOR 10
+
+#define BLOCK_LENGTH 17
+#define BLOCK_HEIGHT 3
+#define TILE_COLUMNS 8
 #define MAX_SHOTS 10
-#define blocklen 17
-#define blockh 3
-#define tileColumns 8
 
 const unsigned char frameBounds[4] = {2,2,139,60};
 
@@ -46,14 +48,7 @@ char getB(){
 		(~PDIN >> 3 & 0x01);
 }
 
-char getB_wait(){
-	unsigned char b;
-	while(b == 0){
-		b = getB();
-	}
-	return b;
-}
-
+// Find incidence angle
 long angle(){
 	if(ball_v.y < 0)
 		return arccos(-ball_v.y);
@@ -121,11 +116,11 @@ void drawTiles(){
 		for(i=0; i<8; i++){
 			fgcolor(Tiles[i][n].color);
 			if(!Tiles[i][n].destroyed){
-				drawTile(frameBounds[0]+1+i*blocklen,frameBounds[1]+1+n*blockh, blocklen, blockh, (n+i+1)%2);
+				drawTile(frameBounds[0]+1+i*BLOCK_LENGTH,frameBounds[1]+1+n*BLOCK_HEIGHT, BLOCK_LENGTH, BLOCK_HEIGHT, (n+i+1)%2);
 			}
 		}
 	}
-	fgcolor(15);
+	fgcolor(DEFAULT_COLOR);
 }
 
 void drawBall(){
@@ -138,7 +133,7 @@ void drawBall(){
 	int rotation=0, caseSelect;
 	int strikerCen = (strikerLen/2);
 	long nextAngle;
-	unsigned char column = (next_xPos-frameBounds[0]-1) / blocklen;
+	unsigned char column = (next_xPos-frameBounds[0]-1) / BLOCK_LENGTH;
 
 	gotoxy(ball_p.x >> FIX14_SHIFT, ball_p.y >> FIX14_SHIFT);
 	printf(" ");
@@ -213,14 +208,14 @@ void drawBall(){
 		}
 
 		// Faster, working, but but more spacious way to check
-		if(next_xPos >= frameBounds[0]+1+column*blocklen && next_xPos <= frameBounds[0]+1+(column+1)*blocklen){
+		if(next_xPos >= frameBounds[0]+1+column*BLOCK_LENGTH && next_xPos <= frameBounds[0]+1+(column+1)*BLOCK_LENGTH){
 			int n;
 			for(n=0; n<tileRows; n++){
 				if((next_yPos <= frameBounds[1]+3+n*3 && next_yPos >= frameBounds[1]+1+n*3) && !Tiles[column][n].destroyed){
 					if(next_yPos == frameBounds[1]+2+n*3) ball_v.x = -ball_v.x;
 					else ball_v.y = -ball_v.y;
 					Tiles[column][n].destroyed = 1;
-					drawTile(frameBounds[0]+1+column*blocklen,frameBounds[1]+1+n*3, blocklen, blockh, 79);
+					drawTile(frameBounds[0]+1+column*BLOCK_LENGTH,frameBounds[1]+1+n*3, BLOCK_LENGTH, BLOCK_HEIGHT, 79);
 					addPoints(10);
 					if(--tiles_left == 0) gameState = 3;
 				}
@@ -250,8 +245,8 @@ void drawBullits(){
 				printf(" ");
 			}
 			else {
-				column = (bullits[i].x - frameBounds[0]-1) / blocklen;
-				row = (bullits[i].y - frameBounds[1] - 1) / blockh;
+				column = (bullits[i].x - frameBounds[0]-1) / BLOCK_LENGTH;
+				row = (bullits[i].y - frameBounds[1] - 1) / BLOCK_HEIGHT;
 				gotoxy(bullits[i].x, bullits[i].y );
 				printf(" ");
 				bullits[i].y = bullits[i].y - bullits[i].v;
@@ -261,7 +256,7 @@ void drawBullits(){
 				if(row < tileRows && !Tiles[column][row].destroyed){
 					bullits[i].v = 0;
 					Tiles[column][row].destroyed = 1;
-					drawTile(frameBounds[0]+1+column*blocklen,frameBounds[1]+1+row*3, blocklen, blockh, 79); // Delete Tile
+					drawTile(frameBounds[0]+1+column*BLOCK_LENGTH,frameBounds[1]+1+row*3, BLOCK_LENGTH, BLOCK_HEIGHT, 79); // Delete Tile
 					addPoints(10);
 					if(--tiles_left == 0) gameState = 3;
 
@@ -291,13 +286,12 @@ void winScreen(){
 void initGame(){
 	unsigned char i;
 	
-	fgcolor(15);
+	fgcolor(DEFAULT_COLOR);
 	frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
 	
 	
 	// Init Striker
 	strikerLen = 9;
-	fgcolor(15);
 	strikerPos = (frameBounds[2]-frameBounds[0])/2 - strikerLen/2;
 
 	// Init Ball
@@ -360,7 +354,7 @@ void newGame(unsigned char level){
 			break;
 		case 2: // Hard Mode
 			tileRows = rand(10,12);
-			break;
+					break;
 		case 3: // Chuck Mode
 			tileRows = rand(12,15);
 			break;
@@ -369,13 +363,13 @@ void newGame(unsigned char level){
 			break;
 	}
 	for(n=0; n<tileRows; n++){
-		for(i=0; i<tileColumns; i++){
+		for(i=0; i<TILE_COLUMNS; i++){
 			Tiles[i][n].destroyed = 0;
 			Tiles[i][n].hits = 0;
-			Tiles[i][n].color = defaultTileColor;
+			Tiles[i][n].color = DEFAULT_TILE_COLOR;
 		}
 	}
-	tiles_left = tileColumns*tileRows;
+	tiles_left = TILE_COLUMNS*tileRows;
 
 	gameState = 0;
 }
@@ -409,33 +403,44 @@ void startScreen(){
 	int b;
 	clrscr();
 	printStartscreen();
-	while(!(b & 0x01) || !(b & 0x02) || !(b & 0x04)){
+	while(1){
 		b = getB();
 		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
+		 	menuScreen();
 			break;
 		}
 	}
-	//gameState = 5;
-	menuScreen();
 }
 
 void gameOver(){
 	int b;	
+	LEDsetString("    Game Over", 0);
 	clrscr();
 	printGameOver();
-	while(!(b & 0x01) || !(b & 0x02) || !(b & 0x04)){
+	while(1){
 		b = getB();
 		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
+			points = 0;
+			startScreen();
 			break;
 		}
 	}
-	points = 0;
-	startScreen();
 //	clrscr();
 //	gotoxy((frameBounds[2]-frameBounds[0])/2,(frameBounds[3]+frameBounds[1])/2);
 //	printf("Want to try again?");
 //	gotoxy((frameBounds[2]-frameBounds[0])/2,(frameBounds[3]+frameBounds[1]+2)/2);
 //	printf("    YES     NO");
+}
+void bossPrint(){
+	int i,b;		
+	clrscr();
+	b = getB();
+	gotoxy((frameBounds[0]-frameBounds[2])/2,frameBounds[1]-1);
+		printf("SERIOUS WORK BUSINESS BELOW");
+		for(i=0; i<60; i++){
+			gotoxy((frameBounds[0]-frameBounds[2])/2,i+frameBounds[1]+1);
+				printf("RANDOM NUMBERS = %ld", rand(10,1000));
+		}
 }
 
 void updateGameState(){
@@ -445,7 +450,6 @@ void updateGameState(){
 	if(gameState != gameState_last){
 		switch(gameState){
 			case 0: // Reload LvL
-				LEDsetString("Play",0);
 				break;
 			case 1: // GamePlay
 				setVec(&ball_v, 1, 0);
@@ -453,7 +457,6 @@ void updateGameState(){
 				LEDsetString("    ",0);
 				break;
 			case 2: // Game Over
-				LEDsetString("    Game Over", 0);
 				gameOver();
 				//gameState = 5;
 				break;
@@ -467,6 +470,9 @@ void updateGameState(){
 				break;
 			case 5: // Menuscreen
 				menuScreen();
+				break;
+			case 6: //Boss-mode
+				bossPrint();
 				break;
 			default:
 				break;
@@ -501,6 +507,8 @@ void game(){
 	unsigned char fire_button_last, fire_button, selected_level;
 	//long mul;
 
+	LEDsetString("Play",0);
+
 	while(1){
 		b = getB();
 		updateGameState();
@@ -527,6 +535,11 @@ void game(){
 				drawBall();
 				drawBullits();
 			}
+			
+			if((b & 0x01) && (b & 0x02) && (b & 0x04)){
+				gameState = 6; 
+				
+			}
 		}
 
 		// clock dividers!
@@ -539,12 +552,10 @@ void game(){
 }
 
 void main(){
-	
 	init();
 	startScreen();
 	updateGameState();
 	game();
-	
 
 	do {} while (1 != 2); // stay here always
 }

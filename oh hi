@@ -1,0 +1,53 @@
+* [33m557dd6b[m[33m ([1;36mHEAD[m[33m, [1;32mtemp[m[33m)[m HjalteSmutter2
+* [33m0cb556a[m HjalteSmutter
+[31m|[m * [33m6f609c5[m[33m ([1;31morigin/master[m[33m, [1;31morigin/HEAD[m[33m, [1;32mmaster[m[33m)[m Revert "no message"
+[31m|[m * [33md343995[m no message
+[31m|[m[31m/[m  
+* [33mb4c2b07[m menuundercon
+* [33mcf7ca2b[m GameOverScreen!!
+* [33mc4ff23f[m StartScreen working
+* [33m2f3b3dd[m point, shots, lives system
+* [33m84a4baa[m BULLIT YEAR
+* [33m4fdb516[m bullits
+* [33m3e5fcc6[m BounceProper
+* [33m6966c4d[m bla
+* [33mb5ef1aa[m start screen ascii
+*   [33m4c48c75[m Update
+[33m|[m[34m\[m  
+[33m|[m * [33mc774b02[m Roll BAck
+[33m|[m * [33me0bc518[m Revert "bad"
+[33m|[m *   [33m9193280[m bad2
+[33m|[m [35m|[m[36m\[m  
+[33m|[m * [36m|[m [33m82ad109[m bad
+* [36m|[m [36m|[m [33m032b344[m TilesComplete#1
+* [36m|[m [36m|[m [33m756c3aa[m TileCompact 8notWorking
+[36m|[m [36m|[m[36m/[m  
+[36m|[m[36m/[m[36m|[m   
+* [36m|[m [33m3356212[m TilesForLoop test - too heavy calcwise
+* [36m|[m [33m118d643[m TilesWorking
+[36m|[m[36m/[m  
+* [33m3a638d2[m blocksontheway
+* [33m813779c[m Cleanup
+* [33md922d26[m Start Structure
+* [33m7118239[m StrikerProblem
+* [33m11d12a1[m Striker
+* [33m3d7c97c[m StrikerSlowlyGettingThere
+* [33m7957e6d[m arrrrgHHH !!!
+* [33mf135961[m - Fixed arccos function - Deleted System Files
+* [33m586e9d8[m ignore *.obj
+* [33m19a98a2[m Deleted Unuset LUT files
+* [33m27d5a5f[m sqrt OK VecMag Not OK
+* [33md58db3a[m test
+* [33m7db2414[m asin biatch
+* [33m9bc0dde[m strikerYii
+* [33m59bf634[m striker102
+* [33m2c0b467[m striker101
+* [33ma8dfab5[m ball103
+* [33m50bdce8[m ball102
+* [33m8392e73[m Ball101
+* [33m1b8c139[m frame
+* [33mf7e4fd6[m time
+* [33ma3cb20a[m led.c led.h helper.c
+* [33m2f83c07[m Revert "LED BadComint"
+* [33mda2cec3[m LED BadComint
+* [33m641a62e[m First

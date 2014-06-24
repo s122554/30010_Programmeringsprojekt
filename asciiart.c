@@ -1,7 +1,7 @@
 #include <sio.h>
 #include "asciiart.h"
 #include "ansi.h"
-
+#include "MathFix.h"
 extern const unsigned char frameBounds[4];
 
 rom char startscreen[ASCIIART_HEIGHT][ASCIIART_LENGTH] = {
@@ -110,7 +110,7 @@ rom char gameover[ASCIIART_HEIGHT][ASCIIART_LENGTH] = {
 void printStartscreen(){
 	unsigned char j,i;
 	unsigned char startPos = (frameBounds[2]+frameBounds[0]-ASCIIART_LENGTH)/2 + 2;
-
+	fgcolor(rand(1,15));
 	for(j=0; j<ASCIIART_HEIGHT; j++){
 		gotoxy(startPos,j+(frameBounds[3]+frameBounds[1]-ASCIIART_HEIGHT)/2	);
 		for(i=0;i<ASCIIART_LENGTH;i++){
@@ -122,7 +122,7 @@ void printStartscreen(){
 void printGameOver(){
 	unsigned char j,i;
 	unsigned char startPos = (frameBounds[2]+frameBounds[0]-ASCIIART_LENGTH)/2 + 2;
-
+	fgcolor(rand(1,15));
 	for(j=0; j<ASCIIART_HEIGHT; j++){
 		gotoxy(startPos,j+(frameBounds[3]+frameBounds[1]-ASCIIART_HEIGHT)/2	);
 		for(i=0;i<ASCIIART_LENGTH;i++){

@@ -2,6 +2,7 @@
 #include <menu.h> 
 #include <helper.h>
 #include <ansi.h>
+#include <MathFix.h>
 
 #define MENU_ITEM_COUNT 4
 extern const unsigned char frameBounds[4];
@@ -11,6 +12,7 @@ void menu_print(){
 	unsigned int linespace = 5;
 	char indent = 3;
 	char strLen = strlen("TILE FIGHTER");
+
 	menu_selected = 0;
 
 	reverse(0);
@@ -31,7 +33,7 @@ void menu_print(){
 
 	if(current_index == 3) reverse(1); else reverse(0);
 	gotoxy((frameBounds[2]+frameBounds[1]-strLen)/2+indent, frameBounds[1]+linespace*2+3);
-	printf("CHUCK NORRIS");
+	printf("CHUCKLE NORRIS");
 
 	if(current_index == 3) reverse(0);
 }
