@@ -19,7 +19,7 @@ volatile char LEDupdateFLAG;
 #define BLOCK_LENGTH 17
 #define BLOCK_HEIGHT 3
 #define TILE_COLUMNS 8
-#define MAX_SHOTS 15
+#define MAX_SHOTS 20
 
 const unsigned char frameBounds[4] = {2,2,139,60};
 
@@ -30,7 +30,8 @@ char gameState, gameState_last = -1;
 struct TVector ball_p;
 struct TVector ball_v;
 
-unsigned char strikerPos, strikerLen, striker_v, lives, points, shots;
+unsigned long points;
+unsigned char strikerPos, strikerLen, striker_v, lives, shots;
 unsigned int strikerPeriod, ballPeriod;
 
 
@@ -73,7 +74,7 @@ void init(){
 void addPoints(int p){
 	points += p;
 	gotoxy((frameBounds[2]-frameBounds[0])/2,frameBounds[1]-1);
-	printf("%c%05d", 36, points);
+	printf("%c%05ld", 36, points);
 }
 
 void addLives(int l){
@@ -118,19 +119,31 @@ void addShots(int s){
 }
 
 void destroyTile(unsigned char column, unsigned char row){
+	addPoints(10);
 	switch(Tiles[column][row].type){
 		case 1:
 			addLives(rand(1,4));
 			break;
 		case 2:
-			addShots(5);
+			addShots( rand(3,8) );
+			break;
+ 		case 3:
+			ballPeriod = rand(50,233);
+			break;
+		case 4:
+			addPoints(points);
+			break;
+		case 5: // Brown - Crazy Reflection
+			rotate( &ball_v, rand(0,512) );
+			break;
+		case 6: // Brown - Angle Down
+			setVec( &ball_v, 0, 1);
 			break;
 		default:
 			break;
 	}
 	Tiles[column][row].destroyed = 1;
 	drawTile(frameBounds[0]+1+column*BLOCK_LENGTH, frameBounds[1]+1+row*3, BLOCK_LENGTH, BLOCK_HEIGHT, 79);
-	addPoints(10);
 	if(--tiles_left == 0) gameState = 3;
 }
 
@@ -361,14 +374,13 @@ void newGame(unsigned char level){
 	switch(level){
 		case 0: // Easy Mode
 			tileRows = rand(6,8);
-			
 			break;
 		case 1: // Normal Mode
 			tileRows = rand(8,10);
 			break;
 		case 2: // Hard Mode
 			tileRows = rand(10,12);
-					break;
+			break;
 		case 3: // Chuck Mode
 			tileRows = rand(12,15);
 			break;
@@ -376,22 +388,39 @@ void newGame(unsigned char level){
 			tileRows = 1;
 			break;
 	}
+
 	for(n=0; n<tileRows; n++){
 		for(i=0; i<TILE_COLUMNS; i++){
-			int rnd = rand(0,100);
+			int rnd = rand(0,106);
 
 			Tiles[i][n].destroyed = 0;
 			if(rnd < 90){
 				Tiles[i][n].color = DEFAULT_TILE_COLOR;
 				Tiles[i][n].type = 0;
 			}
-			else if(rnd < 95){
-				Tiles[i][n].color = 5;
+			else if(rnd < 92){
+				// Ekstra Lives
+				Tiles[i][n].color = 5; // Purple - Ekstra Lives
 				Tiles[i][n].type = 1;
 			}
-			else if(rnd < 100){
-				Tiles[i][n].color = 11;
+			else if(rnd < 96){
+				// 
+				Tiles[i][n].color = 11; // Yellow = Shots
 				Tiles[i][n].type = 2;
+			}
+			else if(rnd < 98){
+				Tiles[i][n].color = 2; // Green = Change Ballspeed
+				Tiles[i][n].type = 3;
+			}
+			else if(rnd < 100){
+				// ballspeed
+				Tiles[i][n].color = 1; // Red = Double Points
+				Tiles[i][n].type = 4;
+			}
+			else if(rnd < 106){
+				// ballspeed
+				Tiles[i][n].color = 4; // Blue = Weird Angle
+				Tiles[i][n].type = rand(5,7);
 			}
 		}
 	}
@@ -422,7 +451,6 @@ void menuScreen(){
 			b_last = b;
 		}
 	}
-
 	newGame(item);
 	initGame();
 }
@@ -459,13 +487,20 @@ void bossPrint(){
 	int i,b;		
 	clrscr();
 	b = getB();
+	while(1){
 	gotoxy((frameBounds[0]-frameBounds[2])/2,frameBounds[1]-1);
 		printf("SERIOUS WORK BUSINESS BELOW");
-		for(i=0; i<60; i++){
+		for(i=0; i<1; i++){
 			gotoxy((frameBounds[0]-frameBounds[2])/2,i+frameBounds[1]+1);
 				printf("RANDOM NUMBERS = %ld", rand(10,1000));
 		}
-}
+		if((b & 0x01) && (b & 0x02) && (b & 0x04)){
+			break;
+		}
+	}
+	menuScreen();
+ }
+
 
 void updateGameState(){
 	/*	0: Ball is on striker
@@ -578,12 +613,12 @@ void game(){
 
 void main(){
 	init();
-	//printEazy();
-	
+	printEazy();
+	/*
 	startScreen();
 	updateGameState();
 	game();
-	
+	*/
 	do {} while (1 != 2); // stay here always
 }
 
