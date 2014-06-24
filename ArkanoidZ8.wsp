@@ -396,7 +396,7 @@ MRUFloatCX=0
 MRUFloatCY=0
 MRUFloatStyle=8196
 MRUFloatXPos=-2147483648
-MRUFloatYPos=6822976
+MRUFloatYPos=4243408
 MRUHorzDockCX=1600
 MRUHorzDockCY=29
 MRUVertDockCX=0
@@ -430,7 +430,7 @@ MRUFloatCX=0
 MRUFloatCY=0
 MRUFloatStyle=8196
 MRUFloatXPos=-2147483648
-MRUFloatYPos=4243408
+MRUFloatYPos=5831456
 MRUHorzDockCX=296
 MRUHorzDockCY=30
 MRUVertDockCX=0
@@ -465,7 +465,7 @@ MRUFloatCX=0
 MRUFloatCY=0
 MRUFloatStyle=8196
 MRUFloatXPos=-2147483648
-MRUFloatYPos=6822976
+MRUFloatYPos=7077290
 MRUHorzDockCX=488
 MRUHorzDockCY=30
 MRUVertDockCX=0
@@ -488,9 +488,22 @@ Title=Build
 ptn_Child1=MainFrame
 ptn_Child2=ChildFrames
 
+[WorkState_v1_1.Frames.ChildFrames]
+ptn_Child1=Document-0
+
+[WorkState_v1_1.Frames.ChildFrames.Document-0]
+ptn_Child1=ViewFrame-0
+
+[WorkState_v1_1.Frames.ChildFrames.Document-0.ViewFrame-0]
+DocPathName=.\main.c
+DocTemplateIndex=0
+DocumentString=IDE Document
+IsActiveChildFrame=True
+WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPAAAAAAAAAAAAAAAAPGEAAAAAGGCAAAAA
+
 [WorkState_v1_1.Frames.MainFrame]
-Title=ArkanoidZ8 -- ZDS II - Z8 Encore! Family
-WindowPlacement=MCAAAAAACAAAAAAADAAAAAAAAADIPPPPAADIPPPPPPPPPPPPPPPPPPPPPMAAAAAAMHAAAAAAPHFAAAAAOMDAAAAA
+Title=ArkanoidZ8 -- ZDS II - Z8 Encore! Family -- main.c
+WindowPlacement=MCAAAAAACAAAAAAADAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPMAAAAAAMHAAAAAAPHFAAAAAOMDAAAAA
 
 [WorkState_v1_1.ToolBarMgr]
 CoolLook=True

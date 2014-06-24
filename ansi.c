@@ -87,11 +87,10 @@ void window(int x1, int y1, int x2, int y2, char *str, int style){
 }
 
 void drawTile(unsigned char x, unsigned char y, unsigned char w, unsigned char h, char myChar){
-
-	int i1=0, i2=0;
-	for(i1=0; i1<h; i1++){
-		gotoxy(x, y + i1);
-		for(i2=0; i2<w; i2++){
+	unsigned char i=0, j=0;
+	for(i=0; i<h; i++){
+		gotoxy(x, y + i);
+		for(j=0; j<w; j++){
 			printf("%c",176 + myChar);
 		}
 	}

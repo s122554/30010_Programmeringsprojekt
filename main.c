@@ -96,13 +96,12 @@ void addLives(int l){
 
 void addShots(int s){
 	int i;
-	/*
+	
 	if(shots+s >= MAX_SHOTS){
 		s = MAX_SHOTS - shots;
 	}
-	*/
+	
 	shots += s;
-	if(shots > MAX_SHOTS) shots = MAX_SHOTS;
 
 	if(s > 0){
 		gotoxy(frameBounds[2]-shots,frameBounds[1]-1);
@@ -149,13 +148,38 @@ void destroyTile(unsigned char column, unsigned char row){
 
 
 void drawTiles(){
-	int n,i;
+	unsigned char n,i,x,y;
 	// Draw Tiles
 	for(n=0; n<tileRows; n++){
 		for(i=0; i<8; i++){
 			fgcolor(Tiles[i][n].color);
 			if(!Tiles[i][n].destroyed){
-				drawTile(frameBounds[0]+1+i*BLOCK_LENGTH,frameBounds[1]+1+n*BLOCK_HEIGHT, BLOCK_LENGTH, BLOCK_HEIGHT, (n+i+1)%2);
+				x = frameBounds[0]+1+i*BLOCK_LENGTH;
+				y = frameBounds[1]+1+n*BLOCK_HEIGHT;
+				drawTile(x, y, BLOCK_LENGTH, BLOCK_HEIGHT, (n+i+1)%2);
+				reverse(1);
+				gotoxy(x+6,y+1);
+				switch(Tiles[i][n].type){
+					case 1:
+						printf("LIVES");
+						break;
+					case 2:
+						printf("SHOTS");
+						break;
+					case 3:
+						printf("SPEED");
+						break;
+					case 4:
+						printf("POINTS");
+						break;
+					case 5:
+						printf("ANGLE");
+						break;
+					case 6:
+						printf("DOWN!");
+						break;
+				}
+				reverse(0);
 			}
 		}
 	}
@@ -446,7 +470,8 @@ void menuScreen(){
 			}
 			else if(b & 0x01){
 				randSeed(milis);
-				item = menu_select();	
+				item = menu_select();
+				clrscr();
 			}
 			b_last = b;
 		}
@@ -613,12 +638,11 @@ void game(){
 
 void main(){
 	init();
-	printEazy();
-	/*
+	
 	startScreen();
 	updateGameState();
 	game();
-	*/
+	
 	do {} while (1 != 2); // stay here always
 }
 
