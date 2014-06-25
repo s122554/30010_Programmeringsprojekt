@@ -20,7 +20,9 @@ volatile char LEDupdateFLAG;
 #define BLOCK_LENGTH 17
 #define BLOCK_HEIGHT 3
 #define TILE_COLUMNS 8
-#define MAX_SHOTS 20
+#define MAX_SHOTS 15
+#define MAX_TILE_COLUMNS 8
+#define MAX_TILE_ROWS 15
 
 const unsigned char frameBounds[4] = {2,2,139,60};
 
@@ -38,7 +40,7 @@ unsigned int strikerPeriod, ballPeriod;
 struct Tile {
 	unsigned char type, destroyed, color;
 };
-struct Tile Tiles[8][15];
+struct Tile Tiles[MAX_TILE_COLUMNS][MAX_TILE_ROWS];
 
 struct Bullit {
 	unsigned char x, y, v;
@@ -121,6 +123,7 @@ void destroyTileColumn(unsigned char column){
 	unsigned char row;
 	for(row=0; row<tileRows; row++){
 		if(!Tiles[column][row].destroyed){
+			addPoints(10);
 			Tiles[column][row].destroyed = 1;
 			drawTile(frameBounds[0]+1+column*BLOCK_LENGTH, frameBounds[1]+1+row*3, BLOCK_LENGTH, BLOCK_HEIGHT, 79);
 			if(--tiles_left == 0) gameState = 3;
@@ -159,7 +162,7 @@ void destroyTile(unsigned char column, unsigned char row){
 			rotate( &ball_v, rand(0,512) );
 			ballPeriod = rand(33,333);
 			break;
-		case 8: // White - Wow !!
+		case 8: // Light Red - Clear column 
 			destroyTileColumn(column);
 			break;
 		default:
@@ -172,7 +175,7 @@ void drawTiles(){
 	unsigned char n,i,x,y;
 	// Draw Tiles
 	for(n=0; n<tileRows; n++){
-		for(i=0; i<8; i++){
+		for(i=0; i<MAX_TILE_COLUMNS; i++){
 			fgcolor(Tiles[i][n].color);
 			if(!Tiles[i][n].destroyed){
 				x = frameBounds[0]+1+i*BLOCK_LENGTH;
@@ -404,7 +407,7 @@ void newGame(unsigned char level){
 		case 2: // Hard Mode
 			tileRows = rand(10,12);
 			break;
-		case 3: // Chuck Mode
+		case 3: // Fuck!! Mode
 			tileRows = rand(12,15);
 			break;
 		default: // Bogus Mode
