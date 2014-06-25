@@ -13,6 +13,7 @@
 volatile unsigned long milis;
 volatile char LEDupdateFLAG;
 
+// Constants
 #define DEFAULT_TILE_COLOR 6
 #define DEFAULT_COLOR 10
 
@@ -33,7 +34,6 @@ struct TVector ball_v;
 unsigned long points;
 unsigned char strikerPos, strikerLen, striker_v, lives, shots;
 unsigned int strikerPeriod, ballPeriod;
-
 
 struct Tile {
 	unsigned char type, destroyed, color;
@@ -146,10 +146,10 @@ void destroyTile(unsigned char column, unsigned char row){
 		case 4: // Red - Double your points
 			addPoints(points);
 			break;
-		case 5: // Brown - Crazy Reflection
+		case 5: // Blue - Crazy Reflection
 			rotate( &ball_v, rand(0,512) );
 			break;
-		case 6: // Brown - Angle Down
+		case 6: // Blue - Angle Down
 			setVec( &ball_v, 0, 1);
 			break;
 		case 7: // White - Wow !!
@@ -178,7 +178,6 @@ void drawTiles(){
 				x = frameBounds[0]+1+i*BLOCK_LENGTH;
 				y = frameBounds[1]+1+n*BLOCK_HEIGHT;
 				drawTile(x, y, BLOCK_LENGTH, BLOCK_HEIGHT, (n+i+1)%2);
-				// reverse(1);
 				gotoxy(x+6,y+1);
 				switch(Tiles[i][n].type){
 					case 1:
@@ -206,7 +205,6 @@ void drawTiles(){
 						printf("CLEAR");
 						break;
 				}
-				// reverse(0);
 			}
 		}
 	}
@@ -377,6 +375,18 @@ void moveStriker(char movex){
 	}
 }
 
+void drawGame(){
+	// Draw Stuff
+	fgcolor(DEFAULT_COLOR);
+	frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
+	
+	// Draw Striker
+	gotoxy(strikerPos,frameBounds[3]-1);
+	drawStriker(strikerLen);
+
+	// Draw Tiles
+	drawTiles();
+}
 
 void newGame(unsigned char level){
 	int n,i;
@@ -471,21 +481,12 @@ void newGame(unsigned char level){
 	points = 0;
 	addPoints(0);
 
-	// Draw Stuff
-	fgcolor(DEFAULT_COLOR);
-	frame(frameBounds[0], frameBounds[1], frameBounds[2], frameBounds[3], 1);
-	
-	// Draw Striker
-	gotoxy(strikerPos,frameBounds[3]-1);
-	drawStriker(strikerLen);
-
-	// Draw Tiles
-	drawTiles();
-
+	drawGame();
 }
 
 void menuScreen(){
 	unsigned char b, b_last, item;
+	LEDsetString("    Select Game Mode",0);
 	clrscr();
 	randSeed(milis);
 	fgcolor(DEFAULT_TILE_COLOR);
@@ -506,6 +507,7 @@ void menuScreen(){
 			}
 			b_last = b;
 		}
+		LEDupdate();
 	}
 	newGame(item);
 }
@@ -548,6 +550,7 @@ void gameOver(){
 	clrscr();
 	printGameOver();
 	while(1){
+		LEDupdate();
 		b = getB();
 		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
 			startScreen();
@@ -559,19 +562,23 @@ void gameOver(){
 void bossPrint(){
 	int i,b;		
 	clrscr();
-	b = getB();
-	while(1){
 	gotoxy((frameBounds[0]-frameBounds[2])/2,frameBounds[1]-1);
-		printf("SERIOUS WORK BUSINESS BELOW");
-		for(i=0; i<1; i++){
-			gotoxy((frameBounds[0]-frameBounds[2])/2,i+frameBounds[1]+1);
-				printf("RANDOM NUMBERS = %ld", rand(10,1000));
-		}
-		if((b & 0x01) && (b & 0x02) && (b & 0x04)){
+	printf("SERIOUS WORK BUSINESS BELOW");
+	for(i=0; i<30; i++){
+		gotoxy((frameBounds[0]-frameBounds[2])/2,i+frameBounds[1]+1);
+		printf("RANDOM NUMBERS = %ld", rand(10,1000));
+	}
+	
+	while(1){
+		LEDupdate();
+		b = getB();
+		if((b & 0x01) || (b & 0x02) || (b & 0x04)){
+			gameState = 0;
+			clrscr();
+			drawGame();
 			break;
 		}
 	}
-	menuScreen();
  }
 
 
@@ -685,9 +692,7 @@ void game(){
 void main(){
 	init();
 	
-	// startScreen();
 	menuScreen();
-	// gameState = 3;
 	updateGameState();
 	game();
 	

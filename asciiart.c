@@ -254,7 +254,7 @@ void printStartscreen(){
 void printWinScreen(){
 	unsigned char j,i;
 	unsigned char startPos = 2;
-	fgcolor(rand(9,15));
+	fgcolor(rand(1,7));
 	for(j=0; j<70; j++){
 		gotoxy(startPos,j+2	);
 		for(i=0;i<125;i++){
